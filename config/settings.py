@@ -18,10 +18,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
-    # Tailwind & Live Reload
-    'tailwind',
-    'django_browser_reload',
-     "theme",
+ 
 
     # Django Default Apps
     'django.contrib.admin',
@@ -31,13 +28,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Your Apps
-    'apps.frontend',
- 
 ]
 
 # Tailwind Settings
-TAILWIND_APP_NAME = 'theme'
+
 INTERNAL_IPS = ['127.0.0.1']
 
 MIDDLEWARE = [
@@ -56,7 +50,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'apps/frontend/templates'],  # where your HTML lives
+        'DIRS': [BASE_DIR / 'apps/ui/templates'],  # <-- UPDATE THIS LINE
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -104,7 +98,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'apps/frontend/static',
+    BASE_DIR / 'apps/ui/static',  # <-- UPDATE THIS LINE
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

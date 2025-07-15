@@ -15,7 +15,6 @@ cauliflower_ai/
 │ ├── ui/ // Frontend templates and static files
 │ ├── doctor/ // Logic/models for doctors
 │ ├── user/ // Logic/models for farmers
-│ ├── adminpanel/ // Admin dashboard
 │ └── core/ // Shared logic
 
 ## 🖥️ Frontend (UI App)
@@ -23,22 +22,26 @@ cauliflower_ai/
 All UI templates and static files live under `apps/ui/`.
 
 apps/ui/
-├── templates/
-│ ├── base.html
-│ ├── landing.html
-│ ├── login.html
-│ ├── register_user.html
-│ ├── register_doctor.html
-│ ├── dashboard_user.html
-│ ├── dashboard_doctor.html
-│ ├── dashboard_admin.html
-│ └── components/
-│ ├── navbar.html
-│ └── footer.html
 ├── static/
 │ ├── css/
-│ ├── js/
-│ └── img/
+│ ├── image/
+│ ├── img/
+│ └── js/
+└── templates/
+├── base.html
+├── landing.html
+├── auth/
+│ ├── login.html
+│ └── register/
+│ └── register_user.html
+├── components/
+│ ├── footer.html
+│ └── navbar_dashboard.html
+│ └── navbar_landing.html
+└── dahboard/
+├── dashboard_admin.html
+├── dashboard_doctor.html
+└── dashboard_user.html
 
 Uses Tailwind CSS + daisyUI for styling.
 
@@ -76,7 +79,7 @@ python manage.py runserver
 
 ## ✨ Contributors
 
-- **Wamiq** – Frontend Lead
+- **Wamiq** – Frontend & Project Lead
 - **Zryab Shakir** – AI & Backend Engineer
 
 ## 📄 License

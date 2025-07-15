@@ -1,0 +1,25 @@
+<!-- components/navbar_landing.html -->
+<nav class="bg-green-700 text-white shadow-md sticky top-0 z-50">
+  <div class="navbar max-w-7xl mx-auto px-4">
+    <div class="flex-1">
+      <a href="/" class="text-xl font-bold flex items-center gap-2">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" class="w-6 h-6" />
+        Cauliflower AI
+      </a>
+    </div>
+    <div class="flex-none space-x-2">
+      <a
+        href="/login"
+        class="btn btn-sm btn-outline text-white border-white hover:bg-white hover:text-green-700"
+      >
+        Login
+      </a>
+      <a
+        href="/register"
+        class="btn btn-sm btn-outline text-white border-white hover:bg-white hover:text-green-700"
+      >
+        Register
+      </a>
+    </div>
+  </div>
+</nav>
