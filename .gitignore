@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+
+# Virtual env
+venv/
+.env
+.env.*
+
+# Django stuff
+*.pyc
+db.sqlite3
+media/
+staticfiles/
+
+# Tailwind / Node / NPM
+node_modules/
+theme/static_src/
+theme/static/css/dist/
+theme/package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
