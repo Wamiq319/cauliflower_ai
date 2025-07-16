@@ -1,11 +1,7 @@
 {
-  "name": "tailwind-build",
-  "version": "1.0.0",
-  "private": true,
   "devDependencies": {
-    "tailwindcss": "^4.1.11",
-    "postcss": "^8.5.6",
-    "autoprefixer": "^10.4.21",
-    "daisyui": "^5.0.46"
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15"
   }
 }
