@@ -34,10 +34,10 @@ apps/ui/
 │ ├── login.html
 │ └── register/
 │ └── register_user.html
+│ └── register_doctor.html
 ├── components/
 │ ├── footer.html
-│ └── navbar_dashboard.html
-│ └── navbar_landing.html
+│ └── navbar.html
 └── dahboard/
 ├── dashboard_admin.html
 ├── dashboard_doctor.html
