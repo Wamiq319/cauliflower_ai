@@ -2,24 +2,29 @@
 Cauliflower AI{% endblock %} {% block content %}
 
 <!-- 🌿 Navbar -->
-<nav class="bg-green-700 text-white shadow-md sticky top-0 z-50">
-  <div class="navbar max-w-7xl mx-auto px-4">
-    <div class="flex-1">
-      <a href="/" class="text-xl font-bold flex items-center gap-2">
-        <img src="{% static 'img/logo.png' %}" alt="Logo" class="w-6 h-6" />
-        Cauliflower AI
-      </a>
+<nav class="bg-green-700 text-white shadow-lg sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
+    <!-- Logo -->
+    <div class="flex items-center gap-3 h-10">
+      <img
+        src="{% static 'image/Logo.png' %}"
+        alt="Logo"
+        class="w-10 h-10 object-contain"
+      />
+      <span class="text-2xl font-extrabold tracking-wide">CAULIFLOWER AI</span>
     </div>
-    <div class="flex-none space-x-2">
+
+    <!-- Buttons -->
+    <div class="flex items-center gap-3 ml-auto">
       <a
         href="/login"
-        class="btn btn-sm btn-outline text-white border-white hover:bg-white hover:text-green-700"
+        class="px-5 py-2 border border-green-700 text-green-700 bg-white hover:bg-green-50 transition rounded-lg font-medium shadow"
       >
         Login
       </a>
       <a
         href="/register"
-        class="btn btn-sm btn-outline text-white border-white hover:bg-white hover:text-green-700"
+        class="px-5 py-2 bg-green-700 text-white hover:bg-green-800 transition rounded-lg font-medium shadow"
       >
         Register
       </a>
@@ -28,42 +33,76 @@ Cauliflower AI{% endblock %} {% block content %}
 </nav>
 
 <!-- 💡 Hero Section -->
-<section class="text-center py-20 px-4 bg-green-50">
-  <h1 class="text-4xl md:text-5xl font-bold text-green-800 mb-4">
-    Empowering Farmers with AI
-  </h1>
-  <p class="text-lg md:text-xl text-gray-700 max-w-xl mx-auto mb-6">
-    Upload cauliflower leaf images. Let AI detect diseases instantly — connect
-    with expert doctors for help.
-  </p>
-  <div class="flex justify-center gap-4">
-    <a href="/register" class="btn btn-success btn-wide text-white"
-      >Get Started</a
-    >
-    <a href="/login" class="btn btn-outline btn-success">Login</a>
+<section class="relative text-center py-20 px-4 bg-green-50 overflow-hidden">
+  <div
+    class="max-w-6xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-10"
+  >
+    <!-- Left: Text -->
+    <div class="md:w-1/2 text-left">
+      <h1
+        class="text-4xl md:text-5xl font-extrabold text-green-800 leading-tight mb-4"
+      >
+        Diagnose Cauliflower Diseases Instantly with AI
+      </h1>
+      <p class="text-lg text-gray-700 mb-6">
+        CauliScan AI helps farmers detect diseases in cauliflower leaves, stems,
+        and florets using AI-powered image analysis. Get instant results and
+        expert suggestions for treatment.
+      </p>
+      <div class="flex gap-4">
+        <a
+          href="/register"
+          class="px-6 py-3 rounded-full bg-green-700 text-white hover:bg-green-800 transition font-semibold"
+        >
+          Get Started
+        </a>
+        <a
+          href="/login"
+          class="px-6 py-3 rounded-full border border-green-700 text-green-700 hover:bg-green-100 transition font-semibold"
+        >
+          Login
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: Image -->
+    <div class="md:w-1/2 flex justify-center">
+      <div class="relative">
+        <img
+          src="{% static 'image/Logo.png' %}"
+          alt="Hero Logo"
+          class="w-72 md:w-96 object-contain mx-auto drop-shadow-xl"
+        />
+        <span
+          class="absolute bottom-0 right-0 bg-green-100 text-green-700 text-sm px-3 py-1 rounded-tl-lg font-medium"
+        >
+          AI Powered
+        </span>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- 🧠 Features -->
-<section class="py-16 px-4 max-w-5xl mx-auto text-center">
-  <h2 class="text-3xl font-bold text-green-800 mb-8">How It Works</h2>
+<!-- 🧠 Features Section -->
+<section class="py-16 px-4 max-w-6xl mx-auto text-center">
+  <h2 class="text-3xl font-bold text-green-800 mb-10">How It Works</h2>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-    <div class="p-6 bg-white rounded-lg shadow hover:shadow-md">
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-md transition">
       <h3 class="font-semibold text-xl mb-2">📷 Upload</h3>
       <p class="text-gray-600">
-        Farmers upload images of cauliflower leaves via mobile or desktop.
+        Upload high-quality images of cauliflower leaves using your phone or PC.
       </p>
     </div>
-    <div class="p-6 bg-white rounded-lg shadow hover:shadow-md">
-      <h3 class="font-semibold text-xl mb-2">🤖 Analyze</h3>
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-md transition">
+      <h3 class="font-semibold text-xl mb-2">🤖 Detect</h3>
       <p class="text-gray-600">
-        Our AI model predicts the disease and provides instant results.
+        Let our AI analyze and detect the disease instantly with >90% accuracy.
       </p>
     </div>
-    <div class="p-6 bg-white rounded-lg shadow hover:shadow-md">
-      <h3 class="font-semibold text-xl mb-2">👨‍⚕️ Connect</h3>
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-md transition">
+      <h3 class="font-semibold text-xl mb-2">👨‍⚕️ Get Help</h3>
       <p class="text-gray-600">
-        Doctors review cases and provide medical guidance to the farmers.
+        Receive expert suggestions or treatments recommended by plant doctors.
       </p>
     </div>
   </div>
