@@ -22,12 +22,6 @@ Cauliflower AI{% endblock %} {% block content %}
       >
         Login
       </a>
-      <a
-        href="/register"
-        class="px-5 py-2 bg-green-700 text-white hover:bg-green-800 transition rounded-lg font-medium shadow"
-      >
-        Register
-      </a>
     </div>
   </div>
 </nav>
@@ -51,16 +45,16 @@ Cauliflower AI{% endblock %} {% block content %}
       </p>
       <div class="flex gap-4">
         <a
-          href="/register"
+          href="/register/user"
           class="px-6 py-3 rounded-full bg-green-700 text-white hover:bg-green-800 transition font-semibold"
         >
-          Get Started
+          Register as Farmer
         </a>
         <a
-          href="/login"
+          href="/register/doctor"
           class="px-6 py-3 rounded-full border border-green-700 text-green-700 hover:bg-green-100 transition font-semibold"
         >
-          Login
+          Register as Doctor
         </a>
       </div>
     </div>
@@ -80,6 +74,53 @@ Cauliflower AI{% endblock %} {% block content %}
         </span>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- 👨‍🌾 Farmer CTA Section -->
+<section class="py-16 px-4 max-w-4xl mx-auto text-center">
+  <div class="bg-white rounded-3xl shadow-lg p-10 flex flex-col items-center">
+    <h2 class="text-3xl font-bold text-green-800 mb-4">Are You a Farmer?</h2>
+    <p class="text-green-700 mb-6 text-lg">
+      Join CauliScan AI to diagnose your crops, get instant disease detection,
+      and receive expert advice. Protect your harvest and boost your yield with
+      technology designed for you.
+    </p>
+    <a
+      href="/register/user"
+      class="px-8 py-3 rounded-full bg-green-700 text-white hover:bg-green-800 transition font-semibold shadow mb-2"
+      >Join as a Farmer</a
+    >
+    <span class="text-sm text-gray-500"
+      >Empowering farmers with AI for healthier crops and better outcomes.</span
+    >
+  </div>
+</section>
+
+<!-- 👨‍⚕️ Doctor CTA Section -->
+<section class="py-16 px-4 max-w-4xl mx-auto text-center">
+  <div
+    class="bg-gradient-to-br from-green-50 via-white to-green-100 rounded-3xl shadow-lg p-10 flex flex-col items-center"
+  >
+    <h2 class="text-3xl font-bold text-green-800 mb-4">
+      Are You a Plant Doctor or Agricultural Expert?
+    </h2>
+    <p class="text-green-700 mb-6 text-lg">
+      Join our mission to support farmers through expert guidance.<br />CauliScan
+      AI empowers doctors and plant specialists to review AI-based disease
+      detections and provide accurate suggestions for treatment. Your knowledge
+      can help farmers protect their crops, reduce pesticide misuse, and improve
+      harvest outcomes.
+    </p>
+    <a
+      href="/register/doctor"
+      class="px-8 py-3 rounded-full bg-green-700 text-white hover:bg-green-800 transition font-semibold shadow mb-2"
+      >Join as a Doctor</a
+    >
+    <span class="text-sm text-gray-500"
+      >Make a real-world impact with just a few minutes of your time — right
+      from your phone or laptop.</span
+    >
   </div>
 </section>
 
