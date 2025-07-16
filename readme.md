@@ -7,17 +7,45 @@ This is a Django-based AI platform that allows farmers to detect diseases in cau
 ## 🚀 Project Structure
 
 cauliflower_ai/
-├── venv/ // Virtual environment
+├── venv/ # Virtual environment
 ├── manage.py
-├── db.sqlite3 // Local DB (SQLite for dev)
-├── config/ // Django settings + URLs
+├── db.sqlite3 # Local DB (SQLite for dev)
+├── config/ # Django settings + URLs
+│ ├── settings.py
+│ ├── urls.py
+│ └── wsgi.py
 ├── apps/
-│ ├── ui/ // Frontend templates and static files
-│ ├── doctor/ // Logic/models for doctors
-│ ├── user/ // Logic/models for farmers
-│ └── core/ // Shared logic
-
-## 🖥️ Frontend (UI App)
+│ ├── ui/ # Frontend templates and static files
+│ │ ├── static/
+│ │ │ ├── css/
+│ │ │ ├── image/
+│ │ │ └── js/
+│ │ └── templates/
+│ │ ├── base.html
+│ │ ├── landing.html
+│ │ ├── auth/
+│ │ │ ├── login.html
+│ │ │ └── register/
+│ │ │ ├── register_user.html
+│ │ │ └── register_doctor.html
+│ │ ├── components/
+│ │ │ ├── footer.html
+│ │ │ └── navbar.html
+│ │ └── dahboard/
+│ │ ├── dashboard_admin.html
+│ │ ├── dashboard_doctor.html
+│ │ └── dashboard_user.html
+│ ├── doctor/ # Logic/models for doctors
+│ ├── user/ # Logic/models for farmers
+│ └── core/ # Shared logic
+├── tailwind_build/
+│ ├── input.css
+│ ├── package-lock.json
+│ ├── package.json
+│ └── tailwind.config.js
+├── readme.md
+├── scripts.txt
+└── Final Year Project Proposal Report 8.pdf
 
 All UI templates and static files live under `apps/ui/`.
 
