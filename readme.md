@@ -73,7 +73,7 @@ apps/ui/
 └── dashboard_user.html
 
 Uses Tailwind CSS + daisyUI for styling.
-exit 0
+```
 
 
 ## 🔧 Setup Instructions
