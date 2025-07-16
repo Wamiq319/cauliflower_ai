@@ -6,7 +6,7 @@ This is a Django-based AI platform that allows farmers to detect diseases in cau
 
 ## 🚀 Project Structure
 
-````bash
+```bash
 cauliflower_ai/
 ├── venv/ # Virtual environment
 ├── manage.py
@@ -73,7 +73,9 @@ apps/ui/
 └── dashboard_user.html
 
 Uses Tailwind CSS + daisyUI for styling.
-```bash
+exit 0
+
+
 ## 🔧 Setup Instructions
 
 # Clone the project
@@ -114,4 +116,4 @@ python manage.py runserver
 ## 📄 License
 
 This project is for educational and research use under university guidelines.
-````
+```
