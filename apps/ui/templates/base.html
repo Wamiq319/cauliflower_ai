@@ -9,6 +9,10 @@
     <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}" />
   </head>
   <body class="bg-gray-50 text-gray-900">
-    {% include "components/navbar.html" %}
-    {% block content %}{% endblock %} {% include "components/footer.html" %} 
+    {% include "components/navbar.html" %} {% block content %}{% endblock %} {%
+    include "components/footer.html" %}
+
+    <!-- Add script here -->
+    <script src="{% static 'js/past_analyses.js' %}"></script>
+  </body>
 </html>
