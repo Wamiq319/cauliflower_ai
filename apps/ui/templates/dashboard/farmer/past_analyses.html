@@ -1,0 +1,31 @@
+{% extends "dashboard/farmer/base_farmer.html" %} {% block dashboard_content %}
+
+<div class="bg-white rounded-2xl shadow p-6">
+  <h2 class="text-2xl font-bold text-green-800 mb-6 flex items-center gap-2">
+    <span>📊</span> Past Analyzed
+  </h2>
+  <div class="space-y-4">
+    {% for analysis in past_analyses %}
+    <div
+      class="border border-green-200 rounded-lg p-4 bg-green-50 flex justify-between items-center hover:shadow-md transition"
+    >
+      <div>
+        <div class="font-semibold text-green-800">{{ analysis.crop_name }}</div>
+        <div class="text-sm text-green-600">
+          {{ analysis.disease_name }} — {{ analysis.date }}
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-sm font-medium text-green-700">Confidence</div>
+        <div class="text-lg font-bold text-green-800">
+          {{ analysis.confidence }}
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-green-700 text-center py-8">No past analyses found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
