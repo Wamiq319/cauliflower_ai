@@ -1,4 +1,6 @@
 Run this command to generate the tailwindcss run it from tailwind_build
 npx tailwindcss -i input.css -o ../apps/ui/static/css/styles.css
 python manage.py runserver
-.\venv\Scripts\activate
+source venv/bin/activate
+pip install -r requirements.txt
+
