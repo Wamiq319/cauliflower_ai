@@ -10,6 +10,6 @@ urlpatterns = [
     # Public pages (landing, login, etc.)
     path('', include('apps.pages.urls')),
 
-    # ✅ Auth routes (register_user, register_doctor, etc.)
-    path('accounts/', include('accounts.urls')),
+ path('accounts/', include('apps.accounts.urls')),
+
 ]
