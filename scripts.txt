@@ -13,3 +13,7 @@ adminpass
 farmer registor
 farmeruser
 password
+
+doctor credentials
+doctoruser
+password

@@ -172,3 +172,47 @@ def edit_farmer_profile(request):
         return redirect('farmer_profile')  # Redirect back to profile page
     
     return redirect('farmer_profile')  # If not POST, redirect to profile page
+
+
+@login_required
+def edit_doctor_profile(request):
+    user = request.user
+    doctor_profile = getattr(user, 'doctor_profile', None)
+    
+    if request.method == 'POST':
+        # Update user fields
+        user.first_name = request.POST.get('first_name', '').strip()
+        user.last_name = request.POST.get('last_name', '').strip()
+        
+        # Handle password change
+        new_password = request.POST.get('new_password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+        
+        if new_password and confirm_password:
+            # Check if new passwords match
+            if new_password != confirm_password:
+                messages.error(request, 'New passwords do not match.')
+                return redirect('doctor_profile')
+            
+            # Check if new password is not empty
+            if len(new_password) < 6:
+                messages.error(request, 'New password must be at least 6 characters long.')
+                return redirect('doctor_profile')
+            
+            # Set new password
+            user.set_password(new_password)
+            # Store plain password for display
+            user.plain_password = new_password
+            messages.success(request, 'Password changed successfully!')
+        
+        user.save()
+        
+        # Update doctor profile fields
+        if doctor_profile:
+            doctor_profile.specialization = request.POST.get('specialization', '').strip()
+            doctor_profile.save()
+        
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('doctor_profile')  # Redirect back to profile page
+    
+    return redirect('doctor_profile')  # If not POST, redirect to profile page

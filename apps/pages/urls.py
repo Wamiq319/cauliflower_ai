@@ -4,10 +4,23 @@ from .views import (
     login_page,
     register_user_page,
     register_doctor_page,
+)
+from .farmer_views import (
     farmer_dashboard,
     farmer_profile,
     farmer_image_upload,
     farmer_past_analyses,
+)
+from .doctor_views import (
+    doctor_dashboard,
+    doctor_profile,
+    doctor_suggest,
+    doctor_past_suggestions,
+    doctor_cases,
+    doctor_case_details,
+    doctor_submit_case_suggestion,
+    doctor_solved_cases,
+    doctor_case_suggestion,
 )
 
 urlpatterns = [
@@ -21,4 +34,15 @@ urlpatterns = [
     path('dashboard/farmer/profile/', farmer_profile, name='farmer_profile'),
     path('dashboard/farmer/upload/', farmer_image_upload, name='farmer_image_upload'),
     path('dashboard/farmer/analyses/', farmer_past_analyses, name='farmer_past_analyses'),
+
+    # Doctor Dashboard
+    path('dashboard/doctor/', doctor_dashboard, name='doctor_dashboard'),
+    path('dashboard/doctor/profile/', doctor_profile, name='doctor_profile'),
+    path('dashboard/doctor/suggest/', doctor_suggest, name='doctor_suggest'),
+    path('dashboard/doctor/past-suggestions/', doctor_past_suggestions, name='doctor_past_suggestions'),
+    path('dashboard/doctor/cases/', doctor_cases, name='doctor_cases'),
+    path('dashboard/doctor/cases/<int:case_id>/', doctor_case_details, name='doctor_case_details'),
+    path('dashboard/doctor/cases/<int:case_id>/suggestion/', doctor_case_suggestion, name='doctor_case_suggestion'),
+    path('dashboard/doctor/cases/<int:case_id>/submit/', doctor_submit_case_suggestion, name='doctor_submit_case_suggestion'),
+    path('dashboard/doctor/solved-cases/', doctor_solved_cases, name='doctor_solved_cases'),
 ]

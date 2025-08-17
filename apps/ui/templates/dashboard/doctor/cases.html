@@ -1,0 +1,66 @@
+{% extends "dashboard/doctor/base_doctor.html" %} {% block dashboard_content %}
+
+<div class="flex flex-col items-center mb-8">
+  <span class="text-7xl mb-2">📋</span>
+  <h1 class="text-3xl font-extrabold text-blue-800 mb-2">Cases</h1>
+  <p class="text-lg text-blue-700 text-center">
+    Review and solve pending cases from farmers.
+  </p>
+</div>
+
+<!-- Cases List -->
+<div class="bg-white rounded-2xl shadow p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-blue-800 flex items-center gap-2">
+      <span>📋</span> Pending Cases
+    </h2>
+    <div class="text-sm text-blue-600">Total: {{ cases|length }} cases</div>
+  </div>
+
+  <div class="space-y-4">
+    {% for case in cases %}
+    <div
+      class="border border-blue-200 rounded-lg p-4 bg-blue-50 hover:shadow-md transition"
+    >
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="font-semibold text-blue-800">
+              {{ case.farmer_name }}'s Case
+            </div>
+            <span
+              class="px-2 py-1 rounded-full text-xs font-medium {% if case.status == 'urgent' %}bg-red-100 text-red-800 {% else %}bg-yellow-100 text-yellow-800{% endif %}"
+            >
+              {{ case.status|title }}
+            </span>
+          </div>
+          <div class="text-sm text-blue-600">
+            <span class="font-medium">Suspected Disease:</span> {{
+            case.disease_name }}
+          </div>
+          <div class="text-sm text-blue-600">
+            <span class="font-medium">Submitted:</span> {{ case.date }}
+          </div>
+          <div class="text-sm text-blue-600">
+            <span class="font-medium">Confidence:</span> {{ case.confidence }}
+          </div>
+        </div>
+        <a
+          href="{% url 'doctor_case_details' case.id %}"
+          class="px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium hover:bg-blue-200 transition"
+        >
+          View Details
+        </a>
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <p class="text-blue-700 text-lg">No pending cases at the moment!</p>
+      <p class="text-blue-600">All cases have been reviewed and solved.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

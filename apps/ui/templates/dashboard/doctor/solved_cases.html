@@ -1,0 +1,104 @@
+{% extends "dashboard/doctor/base_doctor.html" %} {% block dashboard_content %}
+
+<div class="flex flex-col items-center mb-8">
+  <span class="text-7xl mb-2">✅</span>
+  <h1 class="text-3xl font-extrabold text-blue-800 mb-2">Solved Cases</h1>
+  <p class="text-lg text-blue-700 text-center">
+    Review all cases that have been solved and recommendations provided.
+  </p>
+</div>
+
+<!-- Solved Cases List -->
+<div class="bg-white rounded-2xl shadow p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-blue-800 flex items-center gap-2">
+      <span>✅</span> Solved Cases
+    </h2>
+    <div class="text-sm text-blue-600">
+      Total: {{ solved_cases|length }} cases
+    </div>
+  </div>
+
+  <div class="space-y-6">
+    {% for case in solved_cases %}
+    <div class="border border-green-200 rounded-lg p-6 bg-green-50">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <h3 class="text-lg font-bold text-green-800 mb-1">
+            {{ case.farmer_name }}'s Case
+          </h3>
+          <p class="text-sm text-green-600">Solved: {{ case.solved_date }}</p>
+        </div>
+        <span
+          class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800"
+        >
+          ✅ Solved
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <h4 class="font-semibold text-green-700 mb-2">Original Disease</h4>
+          <p class="text-gray-700 text-sm">{{ case.original_disease }}</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-green-700 mb-2">Doctor's Diagnosis</h4>
+          <p class="text-gray-700 text-sm">{{ case.doctor_diagnosis }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h4 class="font-semibold text-green-700 mb-2">Treatment Provided</h4>
+          <p class="text-gray-700 text-sm">{{ case.treatment }}</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-green-700 mb-2">Prevention Advice</h4>
+          <p class="text-gray-700 text-sm">{{ case.prevention }}</p>
+        </div>
+      </div>
+
+      <div class="mt-4 flex gap-2">
+        <button
+          class="px-3 py-1 bg-green-100 text-green-800 rounded text-sm hover:bg-green-200 transition"
+          onclick="viewCaseDetails({{ case.id }})"
+        >
+          👁️ View Details
+        </button>
+        <button
+          class="px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm hover:bg-blue-200 transition"
+          onclick="downloadReport({{ case.id }})"
+        >
+          📄 Download Report
+        </button>
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-8">
+      <div class="text-6xl mb-4">📝</div>
+      <p class="text-blue-700 text-lg">No solved cases yet!</p>
+      <p class="text-blue-600">Start by reviewing cases from the Cases page.</p>
+      <a
+        href="{% url 'doctor_cases' %}"
+        class="inline-block mt-4 px-6 py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition"
+      >
+        View Cases
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  function viewCaseDetails(id) {
+    // TODO: Implement view case details functionality
+    alert("View case details functionality will be implemented soon!");
+  }
+
+  function downloadReport(id) {
+    // TODO: Implement download report functionality
+    alert("Download report functionality will be implemented soon!");
+  }
+</script>
+
+{% endblock %}
