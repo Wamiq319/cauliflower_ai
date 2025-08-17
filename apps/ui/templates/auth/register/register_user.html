@@ -28,6 +28,7 @@ Cauliflower AI{% endblock %} {% block content %}
         >Already have an account? Login</a
       >
     </div>
+
     <!-- Right: Registration Form -->
     <div class="md:w-1/2 flex flex-col justify-center items-center p-10">
       <div class="w-full max-w-xl">
@@ -41,20 +42,22 @@ Cauliflower AI{% endblock %} {% block content %}
             >CAULIFLOWER AI</span
           >
         </div>
+
         <form
           method="post"
           action="{% url 'register_user' %}"
-          class="grid grid-cols-1 md:grid-cols-2 md:gap-x-8 gap-y-8"
+          class="grid grid-cols-1 md:grid-cols-2 md:gap-x-8 gap-y-10"
           id="register-form"
         >
           {% csrf_token %}
+
+          <!-- Email -->
           <div>
             <label
               for="email"
               class="block text-sm font-medium text-green-800 mb-1"
+              >Email *</label
             >
-              Email <span class="text-green-800">*</span>
-            </label>
             <input
               id="email"
               name="email"
@@ -63,14 +66,16 @@ Cauliflower AI{% endblock %} {% block content %}
               class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
               placeholder="Enter your email"
             />
+            <p id="error-email" class="text-green-700 text-sm mt-2 hidden"></p>
           </div>
+
+          <!-- Password -->
           <div>
             <label
               for="password"
               class="block text-sm font-medium text-green-800 mb-1"
+              >Password *</label
             >
-              Password <span class="text-green-800">*</span>
-            </label>
             <input
               id="password"
               name="password"
@@ -79,14 +84,19 @@ Cauliflower AI{% endblock %} {% block content %}
               class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
               placeholder="Create a password"
             />
+            <p
+              id="error-password"
+              class="text-green-700 text-sm mt-2 hidden"
+            ></p>
           </div>
+
+          <!-- First Name -->
           <div>
             <label
               for="first_name"
               class="block text-sm font-medium text-green-800 mb-1"
+              >First Name *</label
             >
-              First Name <span class="text-green-800">*</span>
-            </label>
             <input
               id="first_name"
               name="first_name"
@@ -95,14 +105,19 @@ Cauliflower AI{% endblock %} {% block content %}
               class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
               placeholder="Enter your first name"
             />
+            <p
+              id="error-first_name"
+              class="text-green-700 text-sm mt-2 hidden"
+            ></p>
           </div>
+
+          <!-- Last Name -->
           <div>
             <label
               for="last_name"
               class="block text-sm font-medium text-green-800 mb-1"
+              >Last Name *</label
             >
-              Last Name <span class="text-green-800">*</span>
-            </label>
             <input
               id="last_name"
               name="last_name"
@@ -111,14 +126,19 @@ Cauliflower AI{% endblock %} {% block content %}
               class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
               placeholder="Enter your last name"
             />
+            <p
+              id="error-last_name"
+              class="text-green-700 text-sm mt-2 hidden"
+            ></p>
           </div>
+
+          <!-- Username -->
           <div>
             <label
               for="username"
               class="block text-sm font-medium text-green-800 mb-1"
+              >Username *</label
             >
-              Username <span class="text-green-800">*</span>
-            </label>
             <input
               id="username"
               name="username"
@@ -127,14 +147,19 @@ Cauliflower AI{% endblock %} {% block content %}
               class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
               placeholder="Choose a username"
             />
+            <p
+              id="error-username"
+              class="text-green-700 text-sm mt-2 hidden"
+            ></p>
           </div>
+
+          <!-- Farm Size -->
           <div>
             <label
               for="farm_size"
               class="block text-sm font-medium text-green-800 mb-1"
+              >Farm Size (acres or hectares)</label
             >
-              Farm Size (acres or hectares)
-            </label>
             <input
               id="farm_size"
               name="farm_size"
@@ -145,14 +170,19 @@ Cauliflower AI{% endblock %} {% block content %}
               class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
               placeholder="Enter your farm size"
             />
+            <p
+              id="error-farm_size"
+              class="text-green-700 text-sm mt-2 hidden"
+            ></p>
           </div>
+
+          <!-- Years Farming -->
           <div>
             <label
               for="years_farming"
               class="block text-sm font-medium text-green-800 mb-1"
+              >Number of Years Farming</label
             >
-              Number of Years Farming
-            </label>
             <input
               id="years_farming"
               name="years_farming"
@@ -162,14 +192,19 @@ Cauliflower AI{% endblock %} {% block content %}
               class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
               placeholder="How many years have you been farming?"
             />
+            <p
+              id="error-years_farming"
+              class="text-green-700 text-sm mt-2 hidden"
+            ></p>
           </div>
+
+          <!-- Main Crops -->
           <div>
             <label
               for="main_crops"
               class="block text-sm font-medium text-green-800 mb-1"
+              >Main Crops Grown</label
             >
-              Main Crops Grown
-            </label>
             <input
               id="main_crops"
               name="main_crops"
@@ -178,14 +213,19 @@ Cauliflower AI{% endblock %} {% block content %}
               class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
               placeholder="E.g., Cauliflower, Cabbage, etc."
             />
+            <p
+              id="error-main_crops"
+              class="text-green-700 text-sm mt-2 hidden"
+            ></p>
           </div>
+
+          <!-- Irrigation Method -->
           <div>
             <label
               for="irrigation_method"
               class="block text-sm font-medium text-green-800 mb-1"
+              >Irrigation Method</label
             >
-              Irrigation Method
-            </label>
             <input
               id="irrigation_method"
               name="irrigation_method"
@@ -194,7 +234,13 @@ Cauliflower AI{% endblock %} {% block content %}
               class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
               placeholder="E.g., Drip, Flood, Sprinkler, etc."
             />
+            <p
+              id="error-irrigation_method"
+              class="text-green-700 text-sm mt-2 hidden"
+            ></p>
           </div>
+
+          <!-- Submit -->
           <div class="md:col-span-2">
             <button
               type="submit"
@@ -208,4 +254,72 @@ Cauliflower AI{% endblock %} {% block content %}
     </div>
   </div>
 </div>
+
+<!-- ✅ Frontend Validation Script -->
+<script>
+  document
+    .getElementById("register-form")
+    .addEventListener("submit", function (event) {
+      let isValid = true;
+
+      function showError(field, message) {
+        const el = document.getElementById("error-" + field);
+        el.textContent = message;
+        el.classList.remove("hidden");
+        isValid = false;
+      }
+      function clearError(field) {
+        const el = document.getElementById("error-" + field);
+        el.textContent = "";
+        el.classList.add("hidden");
+      }
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const username = document.getElementById("username").value.trim();
+      const farmSize = document.getElementById("farm_size").value.trim();
+      const yearsFarming = document
+        .getElementById("years_farming")
+        .value.trim();
+      const mainCrops = document.getElementById("main_crops").value.trim();
+      const irrigationMethod = document
+        .getElementById("irrigation_method")
+        .value.trim();
+
+      // Email
+      if (!email.includes("@")) showError("email", "Enter a valid email.");
+      else clearError("email");
+
+      // Password (simple check)
+      if (password.length < 6)
+        showError("password", "Password must be at least 6 characters.");
+      else clearError("password");
+
+      // Username
+      if (username.length < 3)
+        showError("username", "Username must be at least 3 characters.");
+      else clearError("username");
+
+      // Farm size
+      if (farmSize <= 0)
+        showError("farm_size", "Farm size must be greater than 0.");
+      else clearError("farm_size");
+
+      // Years farming
+      if (yearsFarming < 0)
+        showError("years_farming", "Years cannot be negative.");
+      else clearError("years_farming");
+
+      // Main crops & irrigation
+      if (mainCrops === "") showError("main_crops", "Please enter your crops.");
+      else clearError("main_crops");
+      if (irrigationMethod === "")
+        showError("irrigation_method", "Please enter irrigation method.");
+      else clearError("irrigation_method");
+
+      if (!isValid) {
+        event.preventDefault();
+      }
+    });
+</script>
 {% endblock %}

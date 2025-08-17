@@ -59,27 +59,45 @@ def farmer_profile(request):
 from django.shortcuts import render
 from django.contrib.auth.models import AnonymousUser
 
+
 def farmer_image_upload(request):
+    # Simulated user (for frontend display only)
     user = request.user if request.user.is_authenticated else AnonymousUser()
     user.first_name = "John"
 
+    # Mock AI detection result (Python dictionary format)
     result = {
         "crop_name": "Tomato",
         "disease_name": "Early Blight",
         "suggestions": [
-            "Apply copper-based fungicide weekly.",
-            "Ensure proper plant spacing for better airflow.",
-            "Remove and destroy infected leaves immediately.",
-            "Avoid overhead watering to minimize moisture on leaves.",
-            "Use resistant crop varieties if available."
-        ],
-        "suggested_by": "Dr. Adeel Nazir (Plant Pathologist)"
+            {
+                "text": "Apply copper-based fungicide weekly.",
+                "suggested_by": "Dr. Adeel Nazir (Plant Pathologist)"
+            },
+            {
+                "text": "Ensure proper plant spacing for better airflow.",
+                "suggested_by": "Dr. Sara Khan (Horticulture Expert)"
+            },
+            {
+                "text": "Remove and destroy infected leaves immediately.",
+                "suggested_by": "Dr. Ali Raza (Agricultural Scientist)"
+            },
+            {
+                "text": "Avoid overhead watering to minimize moisture on leaves.",
+                "suggested_by": "Dr. Hina Ahmed (Plant Protection Specialist)"
+            },
+            {
+                "text": "Use resistant crop varieties if available.",
+                "suggested_by": "Dr. Adeel Nazir (Plant Pathologist)"
+            }
+        ]
     }
 
     return render(request, 'dashboard/farmer/image_upload.html', {
         "user": user,
         "result": result,
     })
+
 
 
 def farmer_past_analyses(request):

@@ -2,14 +2,14 @@
 
 <div class="grid md:grid-cols-2 gap-8 items-start">
   <!-- Upload Section -->
-  <div class="bg-white rounded-2xl shadow p-6">
+  <div class="bg-white rounded-2xl shadow p-6 sticky top-4 h-fit">
     <h2 class="text-2xl font-bold text-green-800 mb-4 flex items-center gap-2">
       <span>🔬</span> Analyze Image
     </h2>
     <p class="text-green-700 mb-4">
       Upload your plant image below to analyze for potential diseases.
     </p>
-    <form class="space-y-4">
+    <form class="space-y-4" onsubmit="return false;">
       <input
         type="file"
         accept="image/*"
@@ -19,7 +19,7 @@
       <div id="imagePreview" class="mt-4 hidden">
         <img
           id="preview"
-          class="rounded-lg border border-green-200 max-h-60 object-contain"
+          class="rounded-lg border border-green-200 max-h-60 object-contain mx-auto"
           alt="Uploaded Image Preview"
         />
       </div>
@@ -29,35 +29,51 @@
   <!-- Result Section -->
   <div
     id="resultContainer"
-    class="bg-green-50 rounded-2xl shadow p-6 space-y-4"
+    class="bg-green-50 rounded-2xl shadow p-6 flex flex-col h-[calc(100vh-2rem)]"
     style="display: none"
   >
+    <!-- Title -->
     <h2 class="text-2xl font-bold text-green-800 mb-2 flex items-center gap-2">
       <span>🦠</span> Detection Result
     </h2>
 
-    <div>
+    <!-- Crop & Disease -->
+    <div class="mb-4">
       <div class="text-green-700">
-        <span class="font-semibold">Crop:</span> {{ result.crop_name }}
+        <span class="font-semibold">Crop:</span> <span id="cropName"></span>
       </div>
       <div class="text-green-700">
-        <span class="font-semibold">Disease:</span> {{ result.disease_name }}
+        <span class="font-semibold">Disease:</span>
+        <span id="diseaseName"></span>
       </div>
     </div>
 
-    <div>
-      <h3 class="text-lg font-semibold text-green-800">
-        Recommended Treatments
+    <!-- Scrollable Suggestions -->
+    <div class="flex-1 overflow-y-auto pr-2" id="suggestionsWrapper">
+      <h3 class="text-lg font-semibold text-green-800 mb-3">
+        Doctor's Recommendations
       </h3>
-      <ul class="list-disc list-inside text-green-700 space-y-1">
-        {% for tip in result.suggestions %}
-        <li>{{ tip }}</li>
-        {% endfor %}
-      </ul>
+      <div id="suggestionsList" class="space-y-3"></div>
     </div>
 
-    <div class="text-sm text-green-600">
-      <span class="font-semibold">Suggested by:</span> {{ result.suggested_by }}
+    <!-- Custom Query Input -->
+    <div class="mt-4 border-t border-green-200 pt-3">
+      <h3 class="text-lg font-semibold text-green-800">Ask a Question</h3>
+      <div class="flex gap-2 mt-2">
+        <input
+          type="text"
+          id="customQuery"
+          placeholder="Type your question..."
+          class="flex-1 border border-green-300 rounded px-3 py-2 text-green-800 bg-white"
+        />
+        <button
+          type="button"
+          id="sendQueryBtn"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          Send
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -67,6 +83,38 @@
   const preview = document.getElementById("preview");
   const imagePreview = document.getElementById("imagePreview");
   const resultContainer = document.getElementById("resultContainer");
+  const suggestionsList = document.getElementById("suggestionsList");
+
+  const cropName = document.getElementById("cropName");
+  const diseaseName = document.getElementById("diseaseName");
+
+  // Simulated backend result
+  const result = {
+    crop_name: "Tomato",
+    disease_name: "Early Blight",
+    suggestions: [
+      {
+        text: "Apply copper-based fungicide weekly.",
+        suggested_by: "Dr. Adeel Nazir (Plant Pathologist)",
+      },
+      {
+        text: "Ensure proper plant spacing for better airflow.",
+        suggested_by: "Dr. Sara Khan (Horticulture Expert)",
+      },
+      {
+        text: "Remove and destroy infected leaves immediately.",
+        suggested_by: "Dr. Ali Raza (Agricultural Scientist)",
+      },
+      {
+        text: "Avoid overhead watering to minimize moisture on leaves.",
+        suggested_by: "Dr. Hina Ahmed (Plant Protection Specialist)",
+      },
+      {
+        text: "Use resistant crop varieties if available.",
+        suggested_by: "Dr. Adeel Nazir (Plant Pathologist)",
+      },
+    ],
+  };
 
   imageInput.addEventListener("change", function () {
     const file = this.files[0];
@@ -76,10 +124,29 @@
     reader.onload = function (e) {
       preview.src = e.target.result;
       imagePreview.classList.remove("hidden");
-      resultContainer.style.display = "block";
+
+      // Show results
+      cropName.textContent = result.crop_name;
+      diseaseName.textContent = result.disease_name;
+      renderSuggestions(result.suggestions);
+      resultContainer.style.display = "flex";
     };
     reader.readAsDataURL(file);
   });
+
+  function renderSuggestions(suggestions) {
+    suggestionsList.innerHTML = "";
+    suggestions.forEach((s) => {
+      const card = document.createElement("div");
+      card.className =
+        "bg-white p-4 rounded-lg shadow border border-green-200 hover:shadow-md transition";
+      card.innerHTML = `
+        <p class="text-green-700">${s.text}</p>
+        <p class="text-sm text-green-500 italic mt-1">— ${s.suggested_by}</p>
+      `;
+      suggestionsList.appendChild(card);
+    });
+  }
 </script>
 
 {% endblock %}
