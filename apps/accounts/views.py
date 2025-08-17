@@ -2,8 +2,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import FarmerProfile, DoctorProfile 
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import check_password
 
 
 User = get_user_model()
@@ -38,6 +40,10 @@ def register_user(request):
             last_name=last_name,
             role='farmer'
         )
+        
+        # Store plain password for display
+        user.plain_password = password
+        user.save()
 
         # Create farmer profile
         FarmerProfile.objects.create(
@@ -79,8 +85,11 @@ def register_doctor(request):
             first_name=first_name,
             last_name=last_name,
             role='doctor',
-          
         )
+        
+        # Store plain password for display
+        user.plain_password = password
+        user.save()
 
         # Create doctor profile
         DoctorProfile.objects.create(
@@ -116,3 +125,50 @@ def user_login(request):
             messages.error(request, 'Invalid username or password.')
 
     return render(request, 'auth/login.html')
+
+
+@login_required
+def edit_farmer_profile(request):
+    user = request.user
+    farmer_profile = getattr(user, 'farmer_profile', None)
+    
+    if request.method == 'POST':
+        # Update user fields
+        user.first_name = request.POST.get('first_name', '').strip()
+        user.last_name = request.POST.get('last_name', '').strip()
+        
+        # Handle password change
+        new_password = request.POST.get('new_password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+        
+        if new_password and confirm_password:
+            # Check if new passwords match
+            if new_password != confirm_password:
+                messages.error(request, 'New passwords do not match.')
+                return redirect('farmer_profile')
+            
+            # Check if new password is not empty
+            if len(new_password) < 6:
+                messages.error(request, 'New password must be at least 6 characters long.')
+                return redirect('farmer_profile')
+            
+            # Set new password
+            user.set_password(new_password)
+            # Store plain password for display
+            user.plain_password = new_password
+            messages.success(request, 'Password changed successfully!')
+        
+        user.save()
+        
+        # Update farmer profile fields
+        if farmer_profile:
+            farmer_profile.farm_size = request.POST.get('farm_size', 0)
+            farmer_profile.years_farming = request.POST.get('years_farming', 0)
+            farmer_profile.main_crops = request.POST.get('main_crops', '').strip()
+            farmer_profile.irrigation_method = request.POST.get('irrigation_method', '').strip()
+            farmer_profile.save()
+        
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('farmer_profile')  # Redirect back to profile page
+    
+    return redirect('farmer_profile')  # If not POST, redirect to profile page

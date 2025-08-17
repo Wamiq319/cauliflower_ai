@@ -8,6 +8,7 @@ class CustomUser(AbstractUser):
         ('admin', 'Admin'),
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    plain_password = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
         return f"{self.username} ({self.role})"
