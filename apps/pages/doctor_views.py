@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from apps.doctors.models import GeneralSuggestion
 
 
 # =============================================================================
@@ -12,10 +13,16 @@ from django.contrib import messages
 def doctor_dashboard(request):
     """Doctor dashboard with statistics."""
     user = request.user
+    
+    # Get real statistics from the database
+    total_suggestions = GeneralSuggestion.objects.filter(doctor=user).count()
+    active_suggestions = GeneralSuggestion.objects.filter(doctor=user).count()  # For now, all suggestions are considered active
+    total_cases_reviewed = 15  # This would come from a Case model when you have one
+    
     stats = {
-        "total_suggestions": 8,
-        "active_suggestions": 6,
-        "total_cases_reviewed": 15
+        "total_suggestions": total_suggestions,
+        "active_suggestions": active_suggestions,
+        "total_cases_reviewed": total_cases_reviewed
     }
     
     return render(request, 'dashboard/doctor/dashboard.html', {
@@ -33,6 +40,12 @@ def doctor_profile(request):
         "user": user,
         "doctor_profile": doctor_profile,
     })
+
+
+@login_required
+def doctor_suggest(request):
+    """Doctor suggestion page - redirects to create suggestion."""
+    return redirect('doctor_create_suggestion')
 
 
 # =============================================================================
@@ -71,53 +84,6 @@ def doctor_case_details(request, case_id):
 
 
 @login_required
-def doctor_case_suggestion(request, case_id):
-    """Create suggestion for a specific case."""
-    if request.method == 'POST':
-        # Handle form submission for case suggestion
-        treatment = request.POST.get('treatment', '')
-        prevention = request.POST.get('prevention', '')
-        notes = request.POST.get('notes', '')
-        priority = request.POST.get('priority', '')
-        
-        # TODO: Save the suggestion to database
-        # For now, just redirect with success message
-        messages.success(request, 'Suggestion submitted successfully!')
-        return redirect('doctor_dashboard')
-    
-    case = {
-        "id": case_id,
-        "farmer_name": "Ali Khan",
-        "date": "2025-07-24",
-        "status": "urgent",
-        "disease_name": "Black Rot",
-        "confidence": "92%",
-        "image": {"url": "/static/image/Logo.png"}  # Mock image
-    }
-    return render(request, 'dashboard/doctor/case_suggestion.html', {
-        "case": case
-    })
-
-
-@login_required
-def doctor_submit_case_suggestion(request, case_id):
-    """Submit case suggestion form."""
-    if request.method == 'POST':
-        # Handle form submission for case suggestion
-        diagnosis_confirmation = request.POST.get('diagnosis_confirmation', '')
-        custom_diagnosis = request.POST.get('custom_diagnosis', '')
-        treatment = request.POST.get('treatment', '')
-        prevention = request.POST.get('prevention', '')
-        
-        # TODO: Save the case suggestion to database
-        # For now, just redirect with success message
-        messages.success(request, 'Case recommendation submitted successfully!')
-        return redirect('doctor_solved_cases')
-    
-    return redirect('doctor_case_details', case_id=case_id)
-
-
-@login_required
 def doctor_solved_cases(request):
     """List of solved cases."""
     # Mock data for solved cases
@@ -147,49 +113,16 @@ def doctor_solved_cases(request):
 
 
 # =============================================================================
-# DOCTOR SUGGESTION MANAGEMENT VIEWS
+# DOCTOR SUGGESTION VIEWS
 # =============================================================================
 
 @login_required
-def doctor_suggest(request):
-    """Create general suggestion page."""
-    if request.method == 'POST':
-        # Handle form submission for general suggestion
-        disease_type = request.POST.get('disease_type', '')
-        title = request.POST.get('title', '')
-        treatment = request.POST.get('treatment', '')
-        prevention = request.POST.get('prevention', '')
-        best_practices = request.POST.get('best_practices', '')
-        priority = request.POST.get('priority', '')
-        
-        # TODO: Save the general suggestion to database
-        # For now, just redirect with success message
-        messages.success(request, 'Suggestion created successfully!')
-        return redirect('doctor_past_suggestions')
-    
-    return render(request, 'dashboard/doctor/create_suggestion.html')
-
-
-@login_required
 def doctor_past_suggestions(request):
-    """List of past suggestions created by doctor."""
-    # Mock data for past suggestions
-    past_suggestions = [
-        {
-            "id": 1,
-            "disease": "Black Rot",
-            "treatment": "Apply copper-based fungicide weekly",
-            "prevention": "Ensure proper plant spacing",
-            "created_at": "2025-07-20"
-        },
-        {
-            "id": 2,
-            "disease": "Downy Mildew",
-            "treatment": "Use fungicides containing mancozeb",
-            "prevention": "Avoid overhead watering",
-            "created_at": "2025-07-18"
-        }
-    ]
+    """List of past suggestions created by the logged-in doctor."""
+    # Get all suggestions created by the current doctor
+    past_suggestions = GeneralSuggestion.objects.filter(
+        doctor=request.user
+    ).order_by("-created_at")
     
     return render(request, 'dashboard/doctor/view_suggestions.html', {
         "past_suggestions": past_suggestions

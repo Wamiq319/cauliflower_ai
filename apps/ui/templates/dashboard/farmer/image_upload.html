@@ -1,143 +1,233 @@
-{% extends "dashboard/doctor/base_doctor.html" %} {% block dashboard_content %}
+{% extends "dashboard/farmer/base_farmer.html" %} {% block dashboard_content %}
 
 <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow p-8">
-  <!-- Case Information Header -->
-  <div class="border-b border-blue-200 pb-6 mb-6">
-    <h2 class="text-2xl font-bold text-blue-800 mb-2 flex items-center gap-2">
-      <span>📋</span> Case Review
+  <!-- Upload Header -->
+  <div class="border-b border-green-200 pb-6 mb-6">
+    <h2 class="text-2xl font-bold text-green-800 mb-2 flex items-center gap-2">
+      <span>🔬</span> Analyze Plant Image
     </h2>
-    <div class="grid grid-cols-2 gap-4 text-blue-700">
-      <div>
-        <span class="font-semibold">Farmer:</span> {{ case.farmer_name }}
-      </div>
-      <div>
-        <span class="font-semibold">Submitted:</span> {{ case.date|date:"M d, Y"
-        }}
-      </div>
-      <div><span class="font-semibold">Crop:</span> Cauliflower</div>
-      <div>
-        <span class="font-semibold">Status:</span>
-        <span
-          class="px-2 py-1 rounded-full text-xs font-medium {% if case.status == 'urgent' %}bg-red-100 text-red-800 {% else %}bg-blue-100 text-blue-800{% endif %}"
-        >
-          {{ case.status|title }}
-        </span>
-      </div>
-    </div>
+    <p class="text-green-700">
+      Upload a photo of your plant to get AI-powered disease detection and
+      expert recommendations.
+    </p>
   </div>
 
-  <!-- Disease Detection Preview -->
+  <!-- Image Upload Form -->
   <div class="mb-8">
-    <h3
-      class="text-lg font-semibold text-blue-800 mb-3 flex items-center gap-2"
-    >
-      <span>🦠</span> AI Detection Result
-    </h3>
-    <div class="flex flex-col md:flex-row gap-6">
-      <div class="md:w-1/3">
-        <img
-          src="{{ case.image.url }}"
-          class="rounded-lg border border-blue-200 w-full h-auto max-h-48 object-contain"
-          alt="Uploaded plant image"
-        />
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- File Upload -->
+      <div>
+        <label class="block text-sm font-medium text-green-700 mb-2">
+          Select Plant Image
+        </label>
+        <div
+          class="border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:border-green-400 transition"
+        >
+          <input
+            type="file"
+            name="plant_image"
+            accept="image/*"
+            required
+            class="hidden"
+            id="imageInput"
+          />
+          <label for="imageInput" class="cursor-pointer">
+            <span class="text-4xl mb-2 block">📷</span>
+            <span class="text-green-700 font-medium"
+              >Click to upload image</span
+            >
+            <p class="text-sm text-green-600 mt-1">
+              JPG, PNG, or GIF up to 10MB
+            </p>
+          </label>
+        </div>
       </div>
-      <div class="md:w-2/3">
-        <div class="bg-blue-50 rounded-lg p-4">
-          <div class="mb-2">
-            <span class="font-semibold text-blue-800">Detected Disease:</span>
-            <span class="text-blue-700 ml-2">{{ case.disease_name }}</span>
-          </div>
-          <div>
-            <span class="font-semibold text-blue-800">Confidence:</span>
-            <span class="text-blue-700 ml-2">{{ case.confidence }}%</span>
-          </div>
+
+      <!-- Submit Button -->
+      <div class="flex justify-end pt-4">
+        <button
+          type="submit"
+          class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium flex items-center gap-2"
+        >
+          <span>🔍</span> Analyze Image
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Analysis Result (if available) -->
+  {% if result %}
+  <div class="border-t border-green-200 pt-6">
+    <h3
+      class="text-lg font-semibold text-green-800 mb-4 flex items-center gap-2"
+    >
+      <span>📊</span> Analysis Result
+    </h3>
+
+    <!-- Disease Detection Info -->
+    <div class="bg-green-50 rounded-lg p-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <span class="font-semibold text-green-800">Crop:</span>
+          <span class="text-green-700 ml-2">{{ result.crop_name }}</span>
+        </div>
+        <div>
+          <span class="font-semibold text-green-800">Disease:</span>
+          <span class="text-green-700 ml-2">{{ result.disease_name }}</span>
+        </div>
+        <div>
+          <span class="font-semibold text-green-800">Confidence:</span>
+          <span class="text-green-700 ml-2">{{ result.confidence }}</span>
+        </div>
+        <div>
+          <span class="font-semibold text-green-800">Analysis Date:</span>
+          <span class="text-green-700 ml-2">{{ result.analysis_date }}</span>
         </div>
       </div>
     </div>
+
+    <!-- Doctor Suggestions -->
+    {% if result.suggestions %}
+    <div class="space-y-6">
+      <h4 class="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
+        <span>💡</span> Expert Recommendations
+      </h4>
+
+      {% for suggestion in result.suggestions %}
+      <div class="bg-white border border-green-200 rounded-lg p-6 shadow-sm">
+        <!-- Suggestion Header -->
+        <div class="border-b border-green-200 pb-4 mb-4">
+          <h5 class="text-lg font-bold text-green-800 mb-2">
+            {{ suggestion.title }}
+          </h5>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-green-600"
+              >By {{ suggestion.suggested_by }}</span
+            >
+            <span
+              class="px-3 py-1 rounded-full text-xs font-medium {% if suggestion.priority == 'high' %}bg-red-100 text-red-800 {% elif suggestion.priority == 'medium' %}bg-yellow-100 text-yellow-800 {% else %}bg-green-100 text-green-800{% endif %}"
+            >
+              {{ suggestion.priority|title }} Priority
+            </span>
+          </div>
+        </div>
+
+        <!-- Treatment Recommendations -->
+        <div class="mb-4">
+          <h6 class="font-semibold text-green-700 mb-2 flex items-center gap-2">
+            <span>💊</span> Treatment Recommendations
+          </h6>
+          <p class="text-green-700 bg-green-50 rounded p-3">
+            {{ suggestion.treatment }}
+          </p>
+        </div>
+
+        <!-- Prevention Measures -->
+        <div class="mb-4">
+          <h6 class="font-semibold text-green-700 mb-2 flex items-center gap-2">
+            <span>🛡️</span> Prevention Measures
+          </h6>
+          <p class="text-green-700 bg-green-50 rounded p-3">
+            {{ suggestion.prevention }}
+          </p>
+        </div>
+
+        <!-- Best Practices -->
+        {% if suggestion.best_practices %}
+        <div>
+          <h6 class="font-semibold text-green-700 mb-2 flex items-center gap-2">
+            <span>✅</span> Best Practices
+          </h6>
+          <p class="text-green-700 bg-green-50 rounded p-3">
+            {{ suggestion.best_practices }}
+          </p>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Open Case Button -->
+    <div class="mt-8 pt-6 border-t border-green-200">
+      <div class="bg-blue-50 rounded-lg p-6">
+        <h4
+          class="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2"
+        >
+          <span>📋</span> Need More Help?
+        </h4>
+        <p class="text-blue-700 mb-4">
+          If you need additional assistance or have specific questions about the
+          analysis, you can open a case for doctors to review and provide
+          personalized recommendations.
+        </p>
+        <button
+          onclick="openCaseModal()"
+          class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium flex items-center gap-2"
+        >
+          <span>📝</span> Open Case for Doctor Review
+        </button>
+      </div>
+    </div>
   </div>
+  {% endif %}
+</div>
 
-  <!-- Doctor Suggestion Form -->
-  <div class="border-t border-blue-200 pt-6">
-    <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center gap-2">
-      <span>💡</span> Provide Your Recommendation
+<!-- Case Modal -->
+<div
+  id="caseModal"
+  class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+    <h3 class="text-lg font-bold text-gray-800 mb-4">
+      Open Case for Doctor Review
     </h3>
-    <form
-      method="POST"
-      action="{% url 'doctor_submit_case_suggestion' case.id %}"
-      class="space-y-4"
-    >
+    <form id="caseForm" method="POST" action="{% url 'farmer_open_case' %}">
       {% csrf_token %}
+      <input
+        type="hidden"
+        name="analysis_id"
+        value="{{ result.analysis_id|default:'' }}"
+      />
+      <input
+        type="hidden"
+        name="disease_name"
+        value="{{ result.disease_name|default:'' }}"
+      />
+      <input
+        type="hidden"
+        name="crop_name"
+        value="{{ result.crop_name|default:'' }}"
+      />
 
-      <!-- Diagnosis Confirmation -->
-      <div>
-        <label class="block text-sm font-medium text-blue-700 mb-1">
-          Confirm Diagnosis
-        </label>
-        <select
-          name="diagnosis_confirmation"
-          required
-          class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="" disabled selected>Select your assessment</option>
-          <option value="confirmed">Confirmed: {{ case.disease_name }}</option>
-          <option value="different">Different Disease (specify below)</option>
-          <option value="healthy">Healthy Plant (false alarm)</option>
-        </select>
-      </div>
-
-      <!-- Custom Diagnosis (Conditional) -->
-      <div id="customDiagnosisContainer" class="hidden">
-        <label class="block text-sm font-medium text-blue-700 mb-1">
-          Your Diagnosis
-        </label>
-        <input
-          type="text"
-          name="custom_diagnosis"
-          class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Enter the correct disease name"
-        />
-      </div>
-
-      <!-- Treatment Plan -->
-      <div>
-        <label class="block text-sm font-medium text-blue-700 mb-1">
-          Treatment Plan*
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Additional Notes
         </label>
         <textarea
-          name="treatment"
+          name="case_notes"
           rows="4"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Describe your specific concerns, symptoms you've noticed, or any additional information that might help doctors provide better recommendations..."
           required
-          class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Provide detailed treatment instructions..."
         ></textarea>
       </div>
 
-      <!-- Prevention Advice -->
-      <div>
-        <label class="block text-sm font-medium text-blue-700 mb-1">
-          Prevention Methods*
-        </label>
-        <textarea
-          name="prevention"
-          rows="3"
-          required
-          class="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Suggest long-term prevention strategies..."
-        ></textarea>
-      </div>
-
-      <div class="flex justify-end gap-3 pt-2">
-        <a
-          href="{% url 'doctor_dashboard' %}"
-          class="px-6 py-2 border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-50 transition"
+      <div class="flex gap-3">
+        <button
+          type="button"
+          onclick="closeCaseModal()"
+          class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
         >
-          Back to Cases
-        </a>
+          Cancel
+        </button>
         <button
           type="submit"
-          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+          class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
         >
-          Submit Recommendation
+          Submit Case
         </button>
       </div>
     </form>
@@ -145,13 +235,38 @@
 </div>
 
 <script>
-  // Show/hide custom diagnosis field based on selection
+  // Preview uploaded image
   document
-    .querySelector('[name="diagnosis_confirmation"]')
-    .addEventListener("change", function () {
-      const container = document.getElementById("customDiagnosisContainer");
-      container.classList.toggle("hidden", this.value !== "different");
+    .getElementById("imageInput")
+    .addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          // You can add image preview functionality here if needed
+          console.log("Image selected:", file.name);
+        };
+        reader.readAsDataURL(file);
+      }
     });
+
+  // Case modal functions
+  function openCaseModal() {
+    document.getElementById("caseModal").classList.remove("hidden");
+    document.getElementById("caseModal").classList.add("flex");
+  }
+
+  function closeCaseModal() {
+    document.getElementById("caseModal").classList.add("hidden");
+    document.getElementById("caseModal").classList.remove("flex");
+  }
+
+  // Close modal when clicking outside
+  document.getElementById("caseModal").addEventListener("click", function (e) {
+    if (e.target === this) {
+      closeCaseModal();
+    }
+  });
 </script>
 
 {% endblock %}

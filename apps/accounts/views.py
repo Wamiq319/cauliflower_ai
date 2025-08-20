@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import FarmerProfile, DoctorProfile 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import check_password
 
 
@@ -216,3 +216,9 @@ def edit_doctor_profile(request):
         return redirect('doctor_profile')  # Redirect back to profile page
     
     return redirect('doctor_profile')  # If not POST, redirect to profile page
+
+@login_required
+def user_logout(request):
+    logout(request)
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('login')

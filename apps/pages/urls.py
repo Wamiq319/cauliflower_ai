@@ -9,6 +9,7 @@ from .farmer_views import (
     farmer_dashboard,
     farmer_profile,
     farmer_image_upload,
+    farmer_open_case,
     farmer_past_analyses,
 )
 from .doctor_views import (
@@ -18,12 +19,12 @@ from .doctor_views import (
     doctor_past_suggestions,
     doctor_cases,
     doctor_case_details,
-    doctor_submit_case_suggestion,
     doctor_solved_cases,
-    doctor_case_suggestion,
 )
 
+
 urlpatterns = [
+    # Landing and Auth Pages
     path('', landing_page, name='landing'),
     path('login/', login_page, name='login'),
     path('register/user/', register_user_page, name='register_user'),
@@ -33,16 +34,15 @@ urlpatterns = [
     path('dashboard/farmer/', farmer_dashboard, name='farmer_dashboard'),
     path('dashboard/farmer/profile/', farmer_profile, name='farmer_profile'),
     path('dashboard/farmer/upload/', farmer_image_upload, name='farmer_image_upload'),
+    path('dashboard/farmer/open-case/', farmer_open_case, name='farmer_open_case'),
     path('dashboard/farmer/analyses/', farmer_past_analyses, name='farmer_past_analyses'),
 
     # Doctor Dashboard
     path('dashboard/doctor/', doctor_dashboard, name='doctor_dashboard'),
     path('dashboard/doctor/profile/', doctor_profile, name='doctor_profile'),
     path('dashboard/doctor/suggest/', doctor_suggest, name='doctor_suggest'),
-    path('dashboard/doctor/past-suggestions/', doctor_past_suggestions, name='doctor_past_suggestions'),
+    path('dashboard/doctor/view_suggestions/', doctor_past_suggestions, name='doctor_past_suggestions'),
     path('dashboard/doctor/cases/', doctor_cases, name='doctor_cases'),
     path('dashboard/doctor/cases/<int:case_id>/', doctor_case_details, name='doctor_case_details'),
-    path('dashboard/doctor/cases/<int:case_id>/suggestion/', doctor_case_suggestion, name='doctor_case_suggestion'),
-    path('dashboard/doctor/cases/<int:case_id>/submit/', doctor_submit_case_suggestion, name='doctor_submit_case_suggestion'),
     path('dashboard/doctor/solved-cases/', doctor_solved_cases, name='doctor_solved_cases'),
 ]

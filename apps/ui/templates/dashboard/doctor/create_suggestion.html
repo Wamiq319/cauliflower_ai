@@ -15,7 +15,11 @@
     <span>📝</span> Create New Suggestion
   </h2>
 
-  <form method="POST" class="space-y-6">
+  <form
+    method="POST"
+    action="{% url 'doctor_create_suggestion' %}"
+    class="space-y-6"
+  >
     {% csrf_token %}
 
     <!-- Disease Type -->
@@ -32,8 +36,6 @@
         <option value="black_rot">Black Rot</option>
         <option value="downy_mildew">Downy Mildew</option>
         <option value="bacterial_spot">Bacterial Spot</option>
-        <option value="clubroot">Clubroot</option>
-        <option value="general">General Care</option>
       </select>
     </div>
 
