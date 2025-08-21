@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import check_password
 
 User = get_user_model()
 
-def register_user(request):
+def register_farmer(request):
     if request.method == 'POST':
         username = request.POST.get('username').strip()
         email = request.POST.get('email').strip()
@@ -25,11 +25,11 @@ def register_user(request):
         # Basic checks
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists.')
-            return redirect('register_user')
+            return redirect('register_farmer')
 
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email already exists.')
-            return redirect('register_user')
+            return redirect('register_farmer')
 
         # Create user
         user = User.objects.create_user(
@@ -54,10 +54,10 @@ def register_user(request):
             irrigation_method=irrigation_method
         )
 
-        messages.success(request, 'Registration successful! Please log in.')
+        messages.success(request, 'Farmer registration successful! Please log in.')
         return redirect('login')  # Redirect to login page after success
 
-    return render(request, 'auth/register/register_user.html')
+    return render(request, 'auth/register/register_farmer.html')
 
 def register_doctor(request):
     if request.method == 'POST':
@@ -118,7 +118,7 @@ def user_login(request):
             elif user.role == 'doctor':
                 return redirect('/dashboard/doctor/')
             elif user.role == 'admin':
-                return redirect('/admin/')
+                return redirect('/dashboard/admin/')
             else:
                 return redirect('/')  # default fallback
         else:

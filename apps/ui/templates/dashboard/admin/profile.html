@@ -57,9 +57,12 @@
   </div>
 
   <!-- Hidden Form for Editing -->
-  <form method="POST" id="profile-form" action="#" class="hidden">
-    {% csrf_token %}
-
+  <form
+    method="POST"
+    id="profile-form"
+    action="/admin-panel/update-profile/"
+    class="hidden"
+  >
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- First Name -->
       <div>
@@ -177,6 +180,32 @@
     });
     saveBtnContainer.classList.add("hidden");
     editBtn.classList.remove("hidden");
+  });
+
+  // Handle form submission
+  profileForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch(this.action, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Profile updated successfully!");
+          // Reload page to show updated information
+          window.location.reload();
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch((error) => {
+        alert("An error occurred. Please try again.");
+        console.error("Error:", error);
+      });
   });
 </script>
 

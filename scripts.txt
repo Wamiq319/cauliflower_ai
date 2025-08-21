@@ -3,7 +3,9 @@ npx tailwindcss -i input.css -o ../apps/ui/static/css/styles.css
 python manage.py runserver
 source venv/bin/activate
 pip install -r requirements.txt
-
+ 
+ migrations Script
+ 
 
 SUPERUSER
 wamiq
@@ -12,16 +14,17 @@ adminpass
 
 
 farmer registor
-farmeruser
-password
+greenfields_john
+SecureFarm2025!
+
 
 doctor credentials
-doctoruser
-password
+dr_smwangi
+CauliExpert@2025
 
 admincredentials
 admin01
-securepassword123
+Password
 
 
 

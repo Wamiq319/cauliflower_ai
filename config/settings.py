@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.ui',
     'apps.doctors',
+    'apps.admin_panel',
     'apps.pages',
 
 ]

@@ -11,7 +11,6 @@ urlpatterns = [
     path('', include('apps.pages.urls')),
 
     path('accounts/', include('apps.accounts.urls')),
-     path('doctors/', include('apps.doctors.urls')),
-
-
+    path('doctors/', include('apps.doctors.urls')),
+    path('admin-panel/', include('apps.admin_panel.urls')),
 ]

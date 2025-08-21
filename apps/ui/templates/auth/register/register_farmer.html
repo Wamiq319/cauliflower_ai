@@ -1,5 +1,5 @@
-{% extends "base.html" %} {% load static %} {% block title %}Register as User -
-Cauliflower AI{% endblock %} {% block content %}
+{% extends "base.html" %} {% load static %} {% block title %}Register as Farmer
+- Cauliflower AI{% endblock %} {% block content %}
 <div
   class="min-h-screen flex items-center justify-center bg-green-50 py-12 px-4"
 >
@@ -11,7 +11,7 @@ Cauliflower AI{% endblock %} {% block content %}
       class="md:w-1/2 bg-gradient-to-br from-green-50 via-white to-green-100 flex flex-col justify-center items-start p-10"
     >
       <h2 class="text-4xl font-extrabold text-green-800 mb-4 leading-tight">
-        Join Cauliflower AI as a User
+        Join Cauliflower AI as a Farmer
       </h2>
       <p class="text-lg text-green-700 mb-6">
         Sign up to diagnose and manage cauliflower diseases with AI-powered
@@ -45,50 +45,11 @@ Cauliflower AI{% endblock %} {% block content %}
 
         <form
           method="post"
-          action="{% url 'register_user' %}"
+          action="{% url 'register_farmer' %}"
           class="grid grid-cols-1 md:grid-cols-2 md:gap-x-8 gap-y-10"
           id="register-form"
         >
           {% csrf_token %}
-
-          <!-- Email -->
-          <div>
-            <label
-              for="email"
-              class="block text-sm font-medium text-green-800 mb-1"
-              >Email *</label
-            >
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
-              placeholder="Enter your email"
-            />
-            <p id="error-email" class="text-green-700 text-sm mt-2 hidden"></p>
-          </div>
-
-          <!-- Password -->
-          <div>
-            <label
-              for="password"
-              class="block text-sm font-medium text-green-800 mb-1"
-              >Password *</label
-            >
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
-              placeholder="Create a password"
-            />
-            <p
-              id="error-password"
-              class="text-green-700 text-sm mt-2 hidden"
-            ></p>
-          </div>
 
           <!-- First Name -->
           <div>
@@ -153,12 +114,51 @@ Cauliflower AI{% endblock %} {% block content %}
             ></p>
           </div>
 
+          <!-- Email -->
+          <div>
+            <label
+              for="email"
+              class="block text-sm font-medium text-green-800 mb-1"
+              >Email *</label
+            >
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
+              placeholder="Enter your email"
+            />
+            <p id="error-email" class="text-green-700 text-sm mt-2 hidden"></p>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label
+              for="password"
+              class="block text-sm font-medium text-green-800 mb-1"
+              >Password *</label
+            >
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              class="w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-700 focus:outline-none transition"
+              placeholder="Create a password"
+            />
+            <p
+              id="error-password"
+              class="text-green-700 text-sm mt-2 hidden"
+            ></p>
+          </div>
+
           <!-- Farm Size -->
           <div>
             <label
               for="farm_size"
               class="block text-sm font-medium text-green-800 mb-1"
-              >Farm Size (acres or hectares)</label
+              >Farm Size (acres or hectares) *</label
             >
             <input
               id="farm_size"
@@ -181,7 +181,7 @@ Cauliflower AI{% endblock %} {% block content %}
             <label
               for="years_farming"
               class="block text-sm font-medium text-green-800 mb-1"
-              >Number of Years Farming</label
+              >Number of Years Farming *</label
             >
             <input
               id="years_farming"
@@ -203,7 +203,7 @@ Cauliflower AI{% endblock %} {% block content %}
             <label
               for="main_crops"
               class="block text-sm font-medium text-green-800 mb-1"
-              >Main Crops Grown</label
+              >Main Crops Grown *</label
             >
             <input
               id="main_crops"
@@ -224,7 +224,7 @@ Cauliflower AI{% endblock %} {% block content %}
             <label
               for="irrigation_method"
               class="block text-sm font-medium text-green-800 mb-1"
-              >Irrigation Method</label
+              >Irrigation Method *</label
             >
             <input
               id="irrigation_method"

@@ -18,9 +18,9 @@ def login_page(request):
     return render(request, 'auth/login.html')
 
 
-def register_user_page(request):
-    """User registration page view."""
-    return render(request, 'auth/register/register_user.html')
+def register_farmer_page(request):
+    """Farmer registration page view."""
+    return render(request, 'auth/register/register_farmer.html')
 
 
 def register_doctor_page(request):
