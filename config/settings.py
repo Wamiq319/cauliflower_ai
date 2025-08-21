@@ -27,8 +27,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-       'apps.accounts',
+    'apps.accounts',
     'apps.ui',
+    'apps.doctors',
+    'apps.pages',
 
 ]
 
@@ -45,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_browser_reload.middleware.BrowserReloadMiddleware',  # live reload middleware
+    'apps.accounts.middleware.AuthMiddleware',  # Custom auth middleware
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -108,5 +111,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 NPM_BIN_PATH = "C:\\Program Files\\nodejs\\npm.cmd"
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# Authentication settings
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/dashboard/farmer/'  # Default redirect, will be overridden by middleware
+LOGOUT_REDIRECT_URL = '/login/'
 
 

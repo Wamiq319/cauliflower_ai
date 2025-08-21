@@ -1,0 +1,97 @@
+{% extends "dashboard/admin/base_admin.html" %} {% block dashboard_content %}
+
+<div class="flex flex-col items-center mb-8">
+  <span class="text-6xl mb-2">👨‍🌾</span>
+  <h1 class="text-3xl font-extrabold text-blue-800 mb-2">Manage Farmers</h1>
+  <p class="text-lg text-blue-700 text-center">
+    View and manage registered farmers. You can remove accounts if necessary.
+  </p>
+</div>
+
+<div class="bg-white rounded-2xl shadow p-6 w-full">
+  <h2 class="text-xl font-bold text-blue-800 mb-4">Farmers</h2>
+
+  <!-- Scrollable table container -->
+  <div class="overflow-x-auto w-full">
+    <table class="min-w-full border border-gray-200 rounded-lg table-auto">
+      <thead class="bg-blue-100 text-blue-900">
+        <tr>
+          <th class="px-4 py-2 text-left">ID</th>
+          <th class="px-4 py-2 text-left">Username</th>
+          <th class="px-4 py-2 text-left">First Name</th>
+          <th class="px-4 py-2 text-left">Last Name</th>
+          <th class="px-4 py-2 text-left">Email</th>
+          <th class="px-4 py-2 text-left">Farm Size</th>
+          <th class="px-4 py-2 text-left">Years Farming</th>
+          <th class="px-4 py-2 text-left">Main Crops</th>
+          <th class="px-4 py-2 text-left">Irrigation</th>
+          <th class="px-4 py-2 text-left">Date Joined</th>
+          <th class="px-4 py-2 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for farmer in farmers %}
+        <tr class="border-b hover:bg-blue-50">
+          <td class="px-4 py-2">{{ farmer.id }}</td>
+          <td
+            class="px-4 py-2 truncate max-w-[120px]"
+            title="{{ farmer.username }}"
+          >
+            {{ farmer.username }}
+          </td>
+          <td class="px-4 py-2">{{ farmer.first_name|default:"-" }}</td>
+          <td class="px-4 py-2">{{ farmer.last_name|default:"-" }}</td>
+          <td
+            class="px-4 py-2 truncate max-w-[180px]"
+            title="{{ farmer.email }}"
+          >
+            {{ farmer.email }}
+          </td>
+          <td class="px-4 py-2">
+            <span class="text-sm font-medium">
+              {{ farmer.farmer_profile.farm_size|default:"-" }}
+            </span>
+          </td>
+          <td class="px-4 py-2">
+            <span class="text-sm font-medium">
+              {{ farmer.farmer_profile.years_farming|default:"-" }} years
+            </span>
+          </td>
+          <td
+            class="px-4 py-2 truncate max-w-[150px]"
+            title="{{ farmer.farmer_profile.main_crops }}"
+          >
+            {{ farmer.farmer_profile.main_crops|default:"-" }}
+          </td>
+          <td
+            class="px-4 py-2 truncate max-w-[120px]"
+            title="{{ farmer.farmer_profile.irrigation_method }}"
+          >
+            {{ farmer.farmer_profile.irrigation_method|default:"-" }}
+          </td>
+          <td class="px-4 py-2">{{ farmer.date_joined|date:"F j, Y" }}</td>
+          <td class="px-4 py-2">
+            <form method="post" action="#">
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="11" class="text-center py-4 text-gray-500">
+            No farmers found.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

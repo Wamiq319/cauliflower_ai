@@ -21,7 +21,12 @@ from .doctor_views import (
     doctor_case_details,
     doctor_solved_cases,
 )
-
+from .admin_views import (
+    admin_dashboard,
+    manage_farmers,
+    manage_doctors,
+    admin_profile,
+)
 
 urlpatterns = [
     # Landing and Auth Pages
@@ -45,4 +50,10 @@ urlpatterns = [
     path('dashboard/doctor/cases/', doctor_cases, name='doctor_cases'),
     path('dashboard/doctor/cases/<int:case_id>/', doctor_case_details, name='doctor_case_details'),
     path('dashboard/doctor/solved-cases/', doctor_solved_cases, name='doctor_solved_cases'),
+
+    # Admin Dashboard
+    path('dashboard/admin/', admin_dashboard, name='admin_dashboard'),
+    path('dashboard/admin/farmers/', manage_farmers, name='manage_farmers'),
+    path('dashboard/admin/doctors/', manage_doctors, name='manage_doctors'),
+    path('dashboard/admin/profile/', admin_profile, name='admin_profile'),
 ]

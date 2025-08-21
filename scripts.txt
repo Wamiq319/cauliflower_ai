@@ -4,6 +4,7 @@ python manage.py runserver
 source venv/bin/activate
 pip install -r requirements.txt
 
+
 SUPERUSER
 wamiq
 wamiq@email.com
@@ -17,3 +18,10 @@ password
 doctor credentials
 doctoruser
 password
+
+admincredentials
+admin01
+securepassword123
+
+
+

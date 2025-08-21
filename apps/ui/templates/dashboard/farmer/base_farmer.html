@@ -1,9 +1,7 @@
 {% extends "base.html" %} {% load static %} {% block content %}
-<div
-  class="min-h-screen flex items-center justify-center bg-green-50 py-12 px-4"
->
+<div class="flex items-center justify-center bg-green-50 py-12 px-8">
   <div
-    class="max-w-6xl w-full bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col md:flex-row"
+    class="w-full bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col md:flex-row"
   >
     <!-- Sidebar -->
     <aside
@@ -50,7 +48,7 @@
     </aside>
     <!-- Main Content -->
     <main class="md:w-3/4 flex flex-col justify-center items-center p-10">
-      <div class="w-full max-w-2xl">
+      <div class="w-full">
         {% block dashboard_content %}
         <!-- Page-specific content goes here -->
         {% endblock %}

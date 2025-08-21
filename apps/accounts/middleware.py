@@ -10,6 +10,7 @@ class AuthMiddleware:
         protected_routes = [
             '/dashboard/farmer/',
             '/dashboard/doctor/',
+            '/dashboard/admin/',
         ]
         
         # Define auth routes that should redirect authenticated users
@@ -28,6 +29,10 @@ class AuthMiddleware:
         # Get current path
         current_path = request.path
         
+
+        
+
+        
         # If user is not authenticated and trying to access protected routes
         if not is_authenticated and any(current_path.startswith(route) for route in protected_routes):
             messages.error(request, 'Please log in to access this page.')
@@ -39,6 +44,8 @@ class AuthMiddleware:
                 return redirect('farmer_dashboard')
             elif request.user.role == 'doctor':
                 return redirect('doctor_dashboard')
+            elif request.user.role == 'admin':
+                return redirect('admin_dashboard')
             else:
                 return redirect('landing')
         
@@ -55,6 +62,21 @@ class AuthMiddleware:
             if user_role == 'farmer' and current_path.startswith('/dashboard/doctor/'):
                 messages.error(request, 'Access denied. This area is for doctors only.')
                 return redirect('farmer_dashboard')
+            
+            # Prevent non-admin users from accessing admin routes
+            if user_role != 'admin' and current_path.startswith('/dashboard/admin/'):
+                messages.error(request, 'Access denied. This area is for administrators only.')
+                if user_role == 'farmer':
+                    return redirect('farmer_dashboard')
+                elif user_role == 'doctor':
+                    return redirect('doctor_dashboard')
+                else:
+                    return redirect('landing')
+            
+            # Prevent admin from accessing non-admin dashboard routes
+            if user_role == 'admin' and (current_path.startswith('/dashboard/farmer/') or current_path.startswith('/dashboard/doctor/')):
+                messages.error(request, 'Access denied. This area is not for administrators.')
+                return redirect('admin_dashboard')
         
         response = self.get_response(request)
         return response 

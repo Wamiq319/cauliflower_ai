@@ -10,6 +10,8 @@ urlpatterns = [
     # Public pages (landing, login, etc.)
     path('', include('apps.pages.urls')),
 
- path('accounts/', include('apps.accounts.urls')),
+    path('accounts/', include('apps.accounts.urls')),
+     path('doctors/', include('apps.doctors.urls')),
+
 
 ]
