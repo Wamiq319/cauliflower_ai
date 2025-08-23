@@ -9,11 +9,7 @@ It provides **role-based dashboards** for farmers, doctors, and admins to manage
 
 ## 🚀 Project Structure
 
-# Project folder tree
-
-## Project Folder Tree
-
-````plaintext
+```plaintext
 cauliflower_ai/
 ├── venv/                       # Virtual environment
 ├── manage.py
@@ -52,50 +48,68 @@ cauliflower_ai/
 │   ├── package.json
 │   └── tailwind.config.js
 ├── scripts.txt
-
 ```
 
-## Notes
+### Notes
 
 - All UI templates and static files are located under `apps/ui/`.
 - Styling is implemented using **Tailwind CSS** with **daisyUI**.
 
 ---
+
 ## 🔧 Setup Instructions
 
+### 1. Clone and Navigate to Project
+
 ```bash
-# 1. Clone the project
 git clone <repo-url>
 cd cauliflower_ai
+```
 
-# 2. Create virtual environment
+### 2. Create and Activate Virtual Environment
+
+```bash
+# Create virtual environment
 python -m venv venv
 
 # Activate virtual environment
-# Windows
+# For Windows:
 venv\Scripts\activate
-# Linux/Mac
+
+# For Linux/Mac:
 source venv/bin/activate
+```
 
-# 3. Install dependencies
+### 3. Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# 4. Build Tailwind CSS
+### 4. Build Tailwind CSS
+
+```bash
 cd tailwind_build
 npx tailwindcss -i input.css -o ../apps/ui/static/css/styles.css
 cd ..
+```
 
-# 5. Run migrations
+### 5. Run Database Migrations
+
+```bash
 python manage.py makemigrations
 python manage.py migrate
+```
 
-# 6. Start development server
+### 6. Start Development Server
+
+```bash
 python manage.py runserver
+```
 
+---
 
 ## 🧠 Roles and Dashboards
-
-# Role table
 
 | Role   | Path              | Features                          |
 | ------ | ----------------- | --------------------------------- |
@@ -107,31 +121,30 @@ python manage.py runserver
 
 ## ✨ Sample Accounts
 
-# Superuser
+### Superuser
 
-Username: wamiq
-Email: wamiq@email.com
-Password: adminpatextss
+- **Username:** wamiq
+- **Email:** wamiq@email.com
+- **Password:** adminpatextss
 
-# Farmer
+### Farmer
 
-Username: greenfields_john
-Password: SecureFarm2025!
+- **Username:** greenfields_john
+- **Password:** SecureFarm2025!
 
-# Doctor
+### Doctor
 
-Username: dr_smwangi
-Password: CauliExpert@2025
+- **Username:** dr_smwangi
+- **Password:** CauliExpert@2025
 
-# Admin
+### Admin
 
-Username: admin01
-Password: Password
+- **Username:** admin01
+- **Password:** Password
 
 ---
 
-## 📄 Notes
+## 📄 Project Team
 
-Anonymous (AI_Engineer)Frontend_Backend_Project_Lead= Wamiq Aahid
-AI_Engineer = Anonymous
-````
+- **Frontend/Backend Project Lead:** Wamiq Aahid
+- **AI Engineer:** Anonymous
