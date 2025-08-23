@@ -54,7 +54,8 @@ urlpatterns = [
 
     # Admin Dashboard
     path('dashboard/admin/', admin_dashboard, name='admin_dashboard'),
-    path('dashboard/admin/events/', manage_events, name='manage_events'),
+ path('dashboard/admin/events/', manage_events, name='admin_manage_events'),
+
     path('dashboard/admin/farmers/', manage_farmers, name='manage_farmers'),
     path('dashboard/admin/doctors/', manage_doctors, name='manage_doctors'),
     path('dashboard/admin/profile/', admin_profile, name='admin_profile'),

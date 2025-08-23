@@ -14,6 +14,9 @@ def doctor_dashboard(request):
     """Doctor dashboard with statistics."""
     user = request.user
     
+    # Check if doctor is approved
+    is_approved = getattr(user.doctor_profile, 'is_approved', False) if hasattr(user, 'doctor_profile') else False
+    
     # Get real statistics from the database
     total_suggestions = GeneralSuggestion.objects.filter(doctor=user).count()
     active_suggestions = GeneralSuggestion.objects.filter(doctor=user).count()  # For now, all suggestions are considered active
@@ -27,7 +30,8 @@ def doctor_dashboard(request):
     
     return render(request, 'dashboard/doctor/dashboard.html', {
         "user": user,
-        "stats": stats
+        "stats": stats,
+        "is_approved": is_approved
     })
 
 

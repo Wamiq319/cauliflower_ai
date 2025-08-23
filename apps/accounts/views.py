@@ -94,10 +94,11 @@ def register_doctor(request):
         # Create doctor profile
         DoctorProfile.objects.create(
             user=user,
-            specialization=specialization
+            specialization=specialization,
+            is_approved=False
         )
 
-        messages.success(request, 'Doctor account created successfully! Please log in.')
+        messages.success(request, 'Doctor account created successfully! Please wait for admin approval before you can access all features.')
         return redirect('login')  # Go to login page after registration
 
     return render(request, 'auth/register/register_doctor.html')

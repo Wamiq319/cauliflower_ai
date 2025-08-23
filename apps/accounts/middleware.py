@@ -16,10 +16,10 @@ class AuthMiddleware:
         # Define auth routes that should redirect authenticated users
         auth_routes = [
             '/login/',
-            '/register/user/',
+            '/register/farmer/',
             '/register/doctor/',
             '/accounts/login/',
-            '/accounts/register/user/',
+            '/accounts/register/farmer/',
             '/accounts/register/doctor/',
         ]
         

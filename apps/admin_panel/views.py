@@ -9,91 +9,35 @@ from datetime import datetime
 # -----------------------------------------------------------------------------
 # EVENTS MANAGEMENT
 # -----------------------------------------------------------------------------
-def manage_events(request):
-    """Display all events and allow adding new ones."""
-    events = Event.objects.all()
-    return render(request, 'dashboard/admin/manage_events.html', {
-        'events': events
-    })
+
 
 @csrf_exempt
 def add_event(request):
-    """Add a new event."""
+    """Render form on GET, create event on POST."""
     if request.method == 'POST':
-        try:
-            title = request.POST.get('title', '').strip()
-            date_str = request.POST.get('date', '').strip()
-            venue = request.POST.get('venue', '').strip()
-            description = request.POST.get('description', '').strip()
-            
-            # Validation
-            if not all([title, date_str, venue, description]):
-                messages.error(request, 'All fields are required.')
-                return JsonResponse({'success': False, 'message': 'All fields are required.'})
-            
-            # Parse date
-            try:
-                date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                messages.error(request, 'Invalid date format. Use YYYY-MM-DD.')
-                return JsonResponse({'success': False, 'message': 'Invalid date format. Use YYYY-MM-DD.'})
-            
-            # Create event
-            event = Event.objects.create(
-                title=title,
-                date=date,
-                venue=venue,
-                description=description
-            )
-            
-            messages.success(request, f'Event "{title}" has been successfully created.')
-            return JsonResponse({'success': True, 'message': f'Event "{title}" created successfully.'})
-            
-        except Exception as e:
-            messages.error(request, f'Error creating event: {str(e)}')
-            return JsonResponse({'success': False, 'message': f'Error creating event: {str(e)}'})
-    
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+        title = request.POST.get('title', '').strip()
+        date_str = request.POST.get('date', '').strip()
+        venue = request.POST.get('venue', '').strip()
+        description = request.POST.get('description', '').strip()
 
-@csrf_exempt
-def edit_event(request, event_id):
-    """Edit an existing event."""
-    if request.method == 'POST':
+        if not all([title, date_str, venue, description]):
+            messages.error(request, 'All fields are required.')
+            return redirect('admin_create_event')
+
         try:
-            event = get_object_or_404(Event, id=event_id)
-            
-            title = request.POST.get('title', '').strip()
-            date_str = request.POST.get('date', '').strip()
-            venue = request.POST.get('venue', '').strip()
-            description = request.POST.get('description', '').strip()
-            
-            # Validation
-            if not all([title, date_str, venue, description]):
-                messages.error(request, 'All fields are required.')
-                return JsonResponse({'success': False, 'message': 'All fields are required.'})
-            
-            # Parse date
-            try:
-                date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                messages.error(request, 'Invalid date format. Use YYYY-MM-DD.')
-                return JsonResponse({'success': False, 'message': 'Invalid date format. Use YYYY-MM-DD.'})
-            
-            # Update event
-            event.title = title
-            event.date = date
-            event.venue = venue
-            event.description = description
-            event.save()
-            
-            messages.success(request, f'Event "{title}" has been successfully updated.')
-            return JsonResponse({'success': True, 'message': f'Event "{title}" updated successfully.'})
-            
-        except Exception as e:
-            messages.error(request, f'Error updating event: {str(e)}')
-            return JsonResponse({'success': False, 'message': f'Error updating event: {str(e)}'})
-    
-    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+            date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            messages.error(request, 'Invalid date format. Use YYYY-MM-DD.')
+            return redirect('admin_create_event')
+
+        Event.objects.create(
+            title=title, date=date, venue=venue, description=description
+        )
+        messages.success(request, f'Event "{title}" created successfully.')
+        return redirect('admin_manage_events')  # redirect to event list
+
+    # GET → render the form
+    return render(request, 'dashboard/admin/add_event.html')
 
 @csrf_exempt
 def delete_event(request, event_id):
@@ -108,6 +52,26 @@ def delete_event(request, event_id):
         except Exception as e:
             messages.error(request, f'Error deleting event: {str(e)}')
             return JsonResponse({'success': False, 'message': f'Error deleting event: {str(e)}'})
+    
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+# -----------------------------------------------------------------------------
+# APPROVE DOCTOR
+# -----------------------------------------------------------------------------
+@csrf_exempt
+def approve_doctor(request, doctor_id):
+    """Approve a doctor account."""
+    if request.method == 'POST':
+        try:
+            doctor = get_object_or_404(CustomUser, id=doctor_id, role='doctor')
+            doctor.doctor_profile.is_approved = True
+            doctor.doctor_profile.save()
+            doctor_name = f"{doctor.first_name} {doctor.last_name}".strip() or doctor.username
+            messages.success(request, f'Doctor "{doctor_name}" has been successfully approved.')
+            return JsonResponse({'success': True, 'message': f'Doctor "{doctor_name}" approved successfully.'})
+        except Exception as e:
+            messages.error(request, f'Error approving doctor: {str(e)}')
+            return JsonResponse({'success': False, 'message': f'Error approving doctor: {str(e)}'})
     
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 

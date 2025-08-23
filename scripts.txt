@@ -10,7 +10,7 @@ pip install -r requirements.txt
 SUPERUSER
 wamiq
 wamiq@email.com
-adminpass
+adminpatextss
 
 
 farmer registor

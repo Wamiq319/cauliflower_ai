@@ -22,6 +22,7 @@
           <th class="px-4 py-2 text-left">Last Name</th>
           <th class="px-4 py-2 text-left">Email</th>
           <th class="px-4 py-2 text-left">Specialization</th>
+          <th class="px-4 py-2 text-left">Approval Status</th>
           <th class="px-4 py-2 text-left">Date Joined</th>
           <th class="px-4 py-2 text-left">Actions</th>
         </tr>
@@ -58,10 +59,36 @@
             {{ doctor.doctor_profile.specialization|default:"-" }}
           </td>
 
+          <!-- Approval Status -->
+          <td class="px-4 py-2">
+            {% if doctor.doctor_profile.is_approved %}
+            <span
+              class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium"
+            >
+              ✅ Approved
+            </span>
+            {% else %}
+            <span
+              class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium"
+            >
+              ⏳ Pending
+            </span>
+            {% endif %}
+          </td>
+
           <td class="px-4 py-2">{{ doctor.date_joined|date:"F j, Y" }}</td>
 
           <!-- Actions -->
           <td class="px-4 py-2">
+            {% if not doctor.doctor_profile.is_approved %}
+            <button
+              data-doctor-id="{{ doctor.id }}"
+              data-doctor-name="{{ doctor.first_name|default:doctor.username|escapejs }}"
+              class="approve-doctor-btn px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition mr-2"
+            >
+              Approve
+            </button>
+            {% endif %}
             <button
               data-doctor-id="{{ doctor.id }}"
               data-doctor-name="{{ doctor.first_name|default:doctor.username|escapejs }}"
@@ -108,6 +135,31 @@
   </div>
 </div>
 
+<!-- Approve Confirmation Modal -->
+<div
+  id="approveModal"
+  class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+    <h3 class="text-lg font-bold text-gray-800 mb-4">Confirm Approval</h3>
+    <p id="approveMessage" class="text-gray-700 mb-6"></p>
+    <div class="flex gap-3">
+      <button
+        onclick="closeApproveModal()"
+        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+      >
+        Cancel
+      </button>
+      <button
+        id="confirmApproveBtn"
+        class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+      >
+        Approve
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Success/Error Message -->
 <div id="messageContainer" class="fixed top-4 right-4 z-50 hidden">
   <div
@@ -119,6 +171,8 @@
 <script>
   let currentDeleteId = null;
   let currentDeleteType = null;
+  let currentApproveId = null;
+  let currentApproveName = null;
 
   function confirmDeleteDoctor(doctorId, doctorName) {
     currentDeleteId = doctorId;
@@ -140,11 +194,57 @@
     document.getElementById("deleteModal").classList.add("flex");
   }
 
+  function confirmApproveDoctor(doctorId, doctorName) {
+    currentApproveId = doctorId;
+    currentApproveName = doctorName;
+    document.getElementById(
+      "approveMessage"
+    ).textContent = `Are you sure you want to approve doctor "${doctorName}"? This will grant them full access to all doctor features.`;
+    document.getElementById("approveModal").classList.remove("hidden");
+    document.getElementById("approveModal").classList.add("flex");
+  }
+
+  function approveDoctor(doctorId, doctorName) {
+    fetch(`/admin-panel/approve/doctor/${doctorId}/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        closeApproveModal();
+        if (data.success) {
+          showMessage(data.message, true);
+          // Reload page after successful approval
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          showMessage(data.message, false);
+        }
+      })
+      .catch((error) => {
+        closeApproveModal();
+        showMessage(
+          "An error occurred while approving. Please try again.",
+          false
+        );
+      });
+  }
+
   function closeDeleteModal() {
     document.getElementById("deleteModal").classList.add("hidden");
     document.getElementById("deleteModal").classList.remove("flex");
     currentDeleteId = null;
     currentDeleteType = null;
+  }
+
+  function closeApproveModal() {
+    document.getElementById("approveModal").classList.add("hidden");
+    document.getElementById("approveModal").classList.remove("flex");
+    currentApproveId = null;
+    currentApproveName = null;
   }
 
   function showMessage(message, isSuccess = true) {
@@ -224,6 +324,34 @@
         confirmDeleteDoctor(doctorId, doctorName);
       });
     });
+
+    // Add event listeners for approve doctor buttons
+    document.querySelectorAll(".approve-doctor-btn").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const doctorId = this.getAttribute("data-doctor-id");
+        const doctorName = this.getAttribute("data-doctor-name");
+        console.log("Approve doctor button clicked:", doctorId, doctorName);
+        confirmApproveDoctor(doctorId, doctorName);
+      });
+    });
+
+    // Set up confirm approve button
+    document
+      .getElementById("confirmApproveBtn")
+      .addEventListener("click", function () {
+        if (currentApproveId) {
+          approveDoctor(currentApproveId, currentApproveName);
+        }
+      });
+
+    // Close modal when clicking outside
+    document
+      .getElementById("approveModal")
+      .addEventListener("click", function (e) {
+        if (e.target === this) {
+          closeApproveModal();
+        }
+      });
   });
 </script>
 

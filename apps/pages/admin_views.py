@@ -22,11 +22,26 @@ def admin_dashboard(request):
     })
 
 # -----------------------------------------------------------------------------
-# MANAGE EVENTS
+# MANAGE EVENTS (read-only for admin)
 # -----------------------------------------------------------------------------
+
 @login_required
 @user_passes_test(is_admin)
 def manage_events(request):
+    """Display all events (read-only)."""
+    events = Event.objects.all().order_by("-date")
+    return render(request, "dashboard/admin/manage_events.html", {
+        "user": request.user,
+        "events": events,
+    })
+
+    """Display all events (read-only)."""
+    events = Event.objects.all().order_by("-date")
+    return render(request, "dashboard/admin/manage_events.html", {
+        "user": request.user,
+        "events": events,
+    })
+
     """Display all events and allow adding new ones."""
     events = Event.objects.all()
     return render(request, "dashboard/admin/manage_events.html", {
@@ -54,7 +69,7 @@ def manage_farmers(request):
 @user_passes_test(is_admin)
 def manage_doctors(request):
     """List all doctors."""
-    doctors = CustomUser.objects.filter(role='doctor')
+    doctors = CustomUser.objects.filter(role='doctor').select_related('doctor_profile')
     return render(request, "dashboard/admin/manage_doctors.html", {
         "user": request.user,
         "doctors": doctors,
