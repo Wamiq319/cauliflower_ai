@@ -23,6 +23,7 @@ from .doctor_views import (
 )
 from .admin_views import (
     admin_dashboard,
+    manage_events,
     manage_farmers,
     manage_doctors,
     admin_profile,
@@ -53,6 +54,7 @@ urlpatterns = [
 
     # Admin Dashboard
     path('dashboard/admin/', admin_dashboard, name='admin_dashboard'),
+    path('dashboard/admin/events/', manage_events, name='manage_events'),
     path('dashboard/admin/farmers/', manage_farmers, name='manage_farmers'),
     path('dashboard/admin/doctors/', manage_doctors, name='manage_doctors'),
     path('dashboard/admin/profile/', admin_profile, name='admin_profile'),

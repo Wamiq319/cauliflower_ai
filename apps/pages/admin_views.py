@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from apps.accounts.models import CustomUser
+from apps.admin_panel.models import Event
 
 # Helper to restrict access
 def is_admin(user):
@@ -18,6 +19,19 @@ def admin_dashboard(request):
         "user": request.user,
         "users": CustomUser.objects.filter(is_staff=False, is_superuser=False, role='farmer').count(),
         "doctors": CustomUser.objects.filter(role='doctor').count(),
+    })
+
+# -----------------------------------------------------------------------------
+# MANAGE EVENTS
+# -----------------------------------------------------------------------------
+@login_required
+@user_passes_test(is_admin)
+def manage_events(request):
+    """Display all events and allow adding new ones."""
+    events = Event.objects.all()
+    return render(request, "dashboard/admin/manage_events.html", {
+        "user": request.user,
+        "events": events,
     })
 
 # -----------------------------------------------------------------------------
