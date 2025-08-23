@@ -30,6 +30,7 @@ from .admin_views import (
     manage_farmers,
     manage_doctors,
     admin_profile,
+    display_admin_notifications,
 )
 
 urlpatterns = [
@@ -63,5 +64,5 @@ urlpatterns = [
     path('dashboard/admin/farmers/', manage_farmers, name='manage_farmers'),
     path('dashboard/admin/doctors/', manage_doctors, name='manage_doctors'),
     path('dashboard/admin/profile/', admin_profile, name='admin_profile'),
-
+    path('dashboard/admin/notifications/', display_admin_notifications, name='admin_manage_notifications'),
 ]

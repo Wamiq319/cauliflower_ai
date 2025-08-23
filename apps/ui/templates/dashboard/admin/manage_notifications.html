@@ -1,54 +1,76 @@
 {% extends "dashboard/admin/base_admin.html" %} {% block dashboard_content %}
 
 <div class="flex flex-col items-center mb-8">
-  <span class="text-5xl mb-2">🗂️</span>
-  <h1 class="text-3xl font-extrabold text-blue-800 mb-2">Manage Events</h1>
+  <span class="text-5xl mb-2">🔔</span>
+  <h1 class="text-3xl font-extrabold text-blue-800 mb-2">
+    Manage Notifications
+  </h1>
   <p class="text-lg text-blue-700 text-center">
-    Review and manage all events in the system.
+    View and delete system notifications for farmers and doctors.
   </p>
 </div>
 
 <div class="bg-white rounded-2xl shadow p-6 w-full">
   <div class="flex justify-between items-center mb-4">
-    <h2 class="text-xl font-bold text-blue-800">Events</h2>
-    <a
-      href="{% url 'admin_create_event' %}"
-      class="px-3 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition font-semibold text-sm"
-    >
-      ➕ Create Event
-    </a>
+    <h2 class="text-xl font-bold text-blue-800">Notifications</h2>
   </div>
 
   <div class="overflow-x-auto w-full">
     <table class="min-w-full border border-gray-200 rounded-lg table-auto">
       <thead class="bg-blue-100 text-blue-900">
         <tr>
-          <th class="px-4 py-2 text-left">ID</th>
+          <th class="px-4 py-2 text-left">#</th>
+          <th class="px-4 py-2 text-left">Recipient</th>
           <th class="px-4 py-2 text-left">Title</th>
+          <th class="px-4 py-2 text-left">Message</th>
           <th class="px-4 py-2 text-left">Date</th>
-          <th class="px-4 py-2 text-left">Venue</th>
-          <th class="px-4 py-2 text-left">Description</th>
           <th class="px-4 py-2 text-left">Actions</th>
         </tr>
       </thead>
       <tbody>
-        {% for event in events %}
+        {% for note in notifications %}
         <tr class="border-b hover:bg-blue-50">
           <td class="px-4 py-2">{{ forloop.counter }}</td>
-          <!-- serial number -->
-          <td class="px-4 py-2 font-semibold">{{ event.title }}</td>
-          <td class="px-4 py-2">{{ event.date|date:"M d, Y" }}</td>
-          <td class="px-4 py-2">{{ event.venue }}</td>
+
+          <!-- Show First + Last Name + Role if recipient exists -->
           <td class="px-4 py-2">
-            <div class="truncate max-w-[200px]" title="{{ event.description }}">
-              {{ event.description }}
+            {% if note.recipient %}
+            <div class="font-semibold">
+              {{ note.recipient.first_name }} {{ note.recipient.last_name }}
+            </div>
+            <div class="text-xs text-gray-600">
+              {% if note.recipient.role == "farmer" %}
+              <span class="px-2 py-1 bg-green-100 text-green-800 rounded"
+                >Farmer</span
+              >
+              {% elif note.recipient.role == "doctor" %}
+              <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded"
+                >Doctor</span
+              >
+              {% else %}
+              <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded"
+                >Other</span
+              >
+              {% endif %}
+            </div>
+            {% else %}
+            <div class="font-semibold text-gray-500">N/A</div>
+            <div class="text-xs text-gray-400">Unknown</div>
+            {% endif %}
+          </td>
+
+          <td class="px-4 py-2 font-semibold">{{ note.title }}</td>
+          <td class="px-4 py-2">
+            <div class="truncate max-w-[250px]" title="{{ note.message }}">
+              {{ note.message }}
             </div>
           </td>
+          <td class="px-4 py-2">{{ note.created_at|date:"M d, Y H:i" }}</td>
           <td class="px-4 py-2">
             <button
-              data-event-id="{{ event.id }}"
-              data-event-title="{{ event.title|escapejs }}"
-              class="delete-event-btn px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+              data-note-id="{{ note.id }}"
+              data-note-title="{{ note.title|escapejs }}"
+              class="delete-note-btn px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
             >
               Delete
             </button>
@@ -57,7 +79,7 @@
         {% empty %}
         <tr>
           <td colspan="6" class="text-center py-4 text-gray-500">
-            No events found.
+            No notifications found.
           </td>
         </tr>
         {% endfor %}
@@ -102,11 +124,11 @@
 <script>
   let currentDeleteId = null;
 
-  function confirmDeleteEvent(eventId, eventTitle) {
-    currentDeleteId = eventId;
+  function confirmDeleteNotification(noteId, noteTitle) {
+    currentDeleteId = noteId;
     document.getElementById(
       "deleteMessage"
-    ).textContent = `Are you sure you want to delete event "${eventTitle}"? This action cannot be undone.`;
+    ).textContent = `Are you sure you want to delete notification "${noteTitle}"? This action cannot be undone.`;
     document.getElementById("deleteModal").classList.remove("hidden");
     document.getElementById("deleteModal").classList.add("flex");
   }
@@ -133,11 +155,11 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".delete-event-btn").forEach((btn) => {
+    document.querySelectorAll(".delete-note-btn").forEach((btn) => {
       btn.addEventListener("click", function () {
-        const eventId = this.getAttribute("data-event-id");
-        const eventTitle = this.getAttribute("data-event-title");
-        confirmDeleteEvent(eventId, eventTitle);
+        const noteId = this.getAttribute("data-note-id");
+        const noteTitle = this.getAttribute("data-note-title");
+        confirmDeleteNotification(noteId, noteTitle);
       });
     });
 
@@ -145,7 +167,7 @@
       .getElementById("confirmDeleteBtn")
       .addEventListener("click", function () {
         if (currentDeleteId) {
-          fetch(`/admin-panel/events/delete/${currentDeleteId}/`, {
+          fetch(`/admin-panel/notifications/delete/${currentDeleteId}/`, {
             method: "POST",
             headers: {
               "X-CSRFToken": "{{ csrf_token }}",
@@ -162,7 +184,7 @@
             })
             .catch((err) => {
               closeDeleteModal();
-              showMessage("Error deleting event.", false);
+              showMessage("Error deleting notification.", false);
             });
         }
       });

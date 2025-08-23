@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from apps.accounts.models import CustomUser
-from apps.admin_panel.models import Event
+from apps.admin_panel.models import Event, Notification
+
 
 # Helper to restrict access to admins
 def is_admin(user):
@@ -111,3 +112,19 @@ def admin_profile(request):
         messages.success(request, "Profile updated successfully!")
 
     return render(request, "dashboard/admin/profile.html", {"user": user})
+
+
+
+# =============================================================================
+# DISPLAY NOTIFICATIONS
+# =============================================================================
+@login_required
+def display_admin_notifications(request):
+    """Display notifications for all users (admin view)."""
+    notifications = Notification.objects.select_related("recipient").order_by("-created_at")
+
+    return render(request, "dashboard/admin/manage_notifications.html", {
+        "user": request.user,
+        "notifications": notifications,
+    })
+

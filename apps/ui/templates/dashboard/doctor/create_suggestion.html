@@ -26,7 +26,7 @@
     <!-- Disease Type -->
     <div>
       <label class="block text-blue-700 font-semibold mb-2">
-        Disease Type
+        🦠 Disease Type
       </label>
       <select
         name="disease_type"
@@ -34,16 +34,16 @@
         required
       >
         <option value="">Select disease type</option>
-        <option value="black_rot">Black Rot</option>
-        <option value="downy_mildew">Downy Mildew</option>
-        <option value="bacterial_spot">Bacterial Spot</option>
+        <option value="black_rot">🖤 Black Rot</option>
+        <option value="downy_mildew">🌿 Downy Mildew</option>
+        <option value="bacterial_spot">🧫 Bacterial Spot</option>
       </select>
     </div>
 
     <!-- Suggestion Title -->
     <div>
       <label class="block text-blue-700 font-semibold mb-2">
-        Suggestion Title
+        📌 Suggestion Title
       </label>
       <input
         type="text"
@@ -57,7 +57,7 @@
     <!-- Treatment Recommendations -->
     <div>
       <label class="block text-blue-700 font-semibold mb-2">
-        Treatment Recommendations
+        💊 Treatment Recommendations
       </label>
       <textarea
         name="treatment"
@@ -71,7 +71,7 @@
     <!-- Prevention Measures -->
     <div>
       <label class="block text-blue-700 font-semibold mb-2">
-        Prevention Measures
+        🛡️ Prevention Measures
       </label>
       <textarea
         name="prevention"
@@ -85,7 +85,7 @@
     <!-- Best Practices -->
     <div>
       <label class="block text-blue-700 font-semibold mb-2">
-        Best Practices
+        ✅ Best Practices
       </label>
       <textarea
         name="best_practices"
@@ -98,7 +98,7 @@
     <!-- Priority Level -->
     <div>
       <label class="block text-blue-700 font-semibold mb-2">
-        Priority Level
+        ⚠️ Priority Level
       </label>
       <select
         name="priority"
@@ -106,9 +106,9 @@
         required
       >
         <option value="">Select priority level</option>
-        <option value="low">Low - General information</option>
-        <option value="medium">Medium - Important for prevention</option>
-        <option value="high">High - Critical for disease management</option>
+        <option value="low">🟢 Low - General information</option>
+        <option value="medium">🟡 Medium - Important for prevention</option>
+        <option value="high">🔴 High - Critical for disease management</option>
       </select>
     </div>
 
@@ -135,7 +135,8 @@
   <div class="text-6xl mb-4">🔒</div>
   <h2 class="text-xl font-bold text-gray-600 mb-4">Access Restricted</h2>
   <p class="text-gray-500 mb-6">
-    You need admin approval to create suggestions and access case management features.
+    You need admin approval to create suggestions and access case management
+    features.
   </p>
   <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
     <p class="text-yellow-800">
@@ -146,6 +147,4 @@
     </p>
   </div>
 </div>
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endblock %}
