@@ -3,12 +3,12 @@ from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 
 from apps.accounts.models import CustomUser
 from .models import Event, Notification
-
 
 
 
@@ -165,7 +165,11 @@ def add_notification(request):
     """
     Admin creates a notification for a specific user (doctor or farmer).
     """
-    recipients = CustomUser.objects.exclude(role="admin")  # only farmers/doctors
+    recipients = (
+        CustomUser.objects
+        .exclude(role="admin")
+        .annotate(full_name=Concat(F("first_name"), Value(" "), F("last_name")))
+    )
 
     if request.method == "POST":
         recipient_id = request.POST.get("recipient_id")
@@ -187,7 +191,10 @@ def add_notification(request):
             title=title,
             message=message_text,
         )
-        messages.success(request, f'Notification "{title}" sent to {recipient.get_full_name() or recipient.username}.')
+        messages.success(
+            request,
+            f'Notification "{title}" sent to {recipient.get_full_name() or recipient.username}.'
+        )
         return redirect("admin_add_notification")
 
     return render(
@@ -195,6 +202,8 @@ def add_notification(request):
         "dashboard/admin/add_notification.html",
         {"recipients": recipients},
     )
+
+
 @csrf_exempt  # CSRF is handled via fetch headers
 def delete_notification(request, note_id):
     """Delete a notification via AJAX."""

@@ -45,10 +45,9 @@
         <option value="">Select User</option>
         {% for u in recipients %}
         <option value="{{ u.id }}">
-          {% if u.first_name or u.last_name %} {{ u.first_name }} {{ u.last_name
-          }} ({{ u.role|title }}) {% else %} {{ u.username }} ({{ u.role|title
-          }}) {% endif %}
+          {{ u.full_name|default:u.username }} ({{ u.role|title }})
         </option>
+
         {% endfor %}
       </select>
     </div>

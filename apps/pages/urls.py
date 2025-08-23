@@ -4,7 +4,7 @@ from .views import (
     login_page,
     register_farmer_page,
     register_doctor_page,
-
+    mark_notification_read,  # <-- shared view
 )
 from .farmer_views import (
     farmer_dashboard,
@@ -12,7 +12,8 @@ from .farmer_views import (
     farmer_image_upload,
     farmer_open_case,
     farmer_past_analyses,
-    farmer_events,  # Added missing import
+    farmer_events,
+    farmer_notifications,
 )
 from .doctor_views import (
     doctor_dashboard,
@@ -22,7 +23,8 @@ from .doctor_views import (
     doctor_cases,
     doctor_case_details,
     doctor_solved_cases,
-    doctor_events,  # Added missing import
+    doctor_events,
+    doctor_notifications,
 )
 from .admin_views import (
     admin_dashboard,
@@ -47,6 +49,7 @@ urlpatterns = [
     path('dashboard/farmer/open-case/', farmer_open_case, name='farmer_open_case'),
     path('dashboard/farmer/analyses/', farmer_past_analyses, name='farmer_past_analyses'),
     path('dashboard/farmer/events/', farmer_events, name='farmer_events'),
+    path('dashboard/farmer/notifications/', farmer_notifications, name='farmer_notifications'),
 
     # Doctor Dashboard
     path('dashboard/doctor/', doctor_dashboard, name='doctor_dashboard'),
@@ -57,6 +60,10 @@ urlpatterns = [
     path('dashboard/doctor/cases/<int:case_id>/', doctor_case_details, name='doctor_case_details'),
     path('dashboard/doctor/solved-cases/', doctor_solved_cases, name='doctor_solved_cases'),
     path('dashboard/doctor/events/', doctor_events, name='doctor_events'),
+    path('dashboard/doctor/notifications/', doctor_notifications, name='doctor_notifications'),
+
+    # Shared Notification Marking
+    path('notifications/mark-read/<int:notification_id>/', mark_notification_read, name='mark_notification_read'),
 
     # Admin Dashboard
     path('dashboard/admin/', admin_dashboard, name='admin_dashboard'),

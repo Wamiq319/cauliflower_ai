@@ -3,7 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from apps.doctors.models import GeneralSuggestion
-from apps.admin_panel.models import Event
+from apps.admin_panel.models import Event,Notification
+
 from django.utils import timezone
 
 
@@ -139,9 +140,24 @@ def doctor_past_suggestions(request):
 
 @login_required
 def doctor_events(request):
+
     """Display events to doctors (read-only)."""
     events = Event.objects.all().order_by("-date")
     return render(request, "dashboard/doctor/doctor_events.html", {
         "user": request.user,
         "events": events,
+    })
+
+
+@login_required
+@login_required
+def doctor_notifications(request):
+    """
+    Display all notifications for the logged-in doctor.
+    Unread notifications are highlighted.
+    """
+    notifications = request.user.notifications.all().order_by('-created_at')
+
+    return render(request, "dashboard/doctor/doctor_notifications.html", {
+        "notifications": notifications,
     })

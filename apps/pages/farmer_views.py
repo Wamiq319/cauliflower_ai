@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-# Model import for events
-from apps.admin_panel.models import Event
+
+from apps.admin_panel.models import Event,Notification
 from django.utils import timezone
 
 
@@ -159,4 +159,15 @@ def farmer_events(request):
     return render(request, "dashboard/farmer/farmer_events.html", {
         "user": request.user,
         "events": events,
+    })
+
+def farmer_notifications(request):
+    """
+    Display all notifications for the logged-in farmer.
+    Unread notifications are highlighted.
+    """
+    notifications = request.user.notifications.all().order_by('-created_at')
+
+    return render(request, "dashboard/farmer/farmer_notifications.html", {
+        "notifications": notifications,
     })
