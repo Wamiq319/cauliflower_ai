@@ -53,6 +53,7 @@ cauliflower_ai/
 │   └── tailwind.config.js
 ├── scripts.txt
 
+```
 
 ## Notes
 
