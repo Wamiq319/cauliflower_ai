@@ -1,12 +1,16 @@
 # 🌿 Cauliflower AI – Disease Detection Platform
 
-This is a Django-based AI platform that allows farmers to detect diseases in cauliflower crops using uploaded images. It includes separate dashboards for users (farmers), doctors (experts), and admins.
+## Description
+
+This is a Django-based AI platform that allows farmers to detect diseases in cauliflower crops using uploaded images.
+It includes separate dashboards for users (farmers), doctors (experts), and admins.
 
 ---
 
 ## 🚀 Project Structure
 
-```bash
+# Project folder tree
+
 cauliflower_ai/
 ├── venv/ # Virtual environment
 ├── manage.py
@@ -32,7 +36,7 @@ cauliflower_ai/
 │ │ ├── components/
 │ │ │ ├── footer.html
 │ │ │ └── navbar.html
-│ │ └── dahboard/
+│ │ └── dashboard/
 │ │ ├── dashboard_admin.html
 │ │ ├── dashboard_doctor.html
 │ │ └── dashboard_user.html
@@ -44,63 +48,59 @@ cauliflower_ai/
 │ ├── package-lock.json
 │ ├── package.json
 │ └── tailwind.config.js
-├── readme.md
 ├── scripts.txt
 └── Final Year Project Proposal Report 8.pdf
 
-All UI templates and static files live under `apps/ui/`.
+# Notes
 
-apps/ui/
-├── static/
-│ ├── css/
-│ ├── image/
-│ ├── img/
-│ └── js/
-└── templates/
-├── base.html
-├── landing.html
-├── auth/
-│ ├── login.html
-│ └── register/
-│ └── register_user.html
-│ └── register_doctor.html
-├── components/
-│ ├── footer.html
-│ └── navbar.html
-└── dahboard/
-├── dashboard_admin.html
-├── dashboard_doctor.html
-└── dashboard_user.html
+- All UI templates and static files live under apps/ui/.
+- Uses Tailwind CSS + daisyUI for styling.
 
-Uses Tailwind CSS + daisyUI for styling.
-```
-
+---
 
 ## 🔧 Setup Instructions
 
-# Clone the project
+# 1. Clone the project
 
-git clone <repo-url>
-cd cauliflower_ai
+$ git clone <repo-url>
+$ cd cauliflower_ai
 
-# Create virtual environment
+# 2. Create virtual environment
 
-python -m venv venv
-venv\Scripts\activate # or source venv/bin/activate (Linux/Mac)
+$ python -m venv venv
 
-# Install requirements
+# Windows
 
-pip install -r requirements.txt
+$ venv\Scripts\activate
 
-# Run migrations
+# Linux/Mac
 
-python manage.py migrate
+$ source venv/bin/activate
 
-# Start dev server
+# 3. Install dependencies
 
-python manage.py runserver
+$ pip install -r requirements.txt
+
+# 4. Build Tailwind CSS
+
+$ cd tailwind_build
+$ npx tailwindcss -i input.css -o ../apps/ui/static/css/styles.css
+$ cd ..
+
+# 5. Run migrations
+
+$ python manage.py makemigrations
+$ python manage.py migrate
+
+# 6. Start development server
+
+$ python manage.py runserver
+
+---
 
 ## 🧠 Roles and Dashboards
+
+# Role table
 
 | Role   | Path              | Features                          |
 | ------ | ----------------- | --------------------------------- |
@@ -108,12 +108,34 @@ python manage.py runserver
 | Doctor | /dashboard/doctor | Review cases, give advice         |
 | Admin  | /dashboard/admin  | Manage users and platform content |
 
-## ✨ Contributors
+---
 
-- **Wamiq** – Frontend & Project Lead
-- **Zryab Shakir** – AI & Backend Engineer
+## ✨ Sample Accounts
 
-## 📄 License
+# Superuser
 
-This project is for educational and research use under university guidelines.
-```
+Username: wamiq
+Email: wamiq@email.com
+Password: adminpatextss
+
+# Farmer
+
+Username: greenfields_john
+Password: SecureFarm2025!
+
+# Doctor
+
+Username: dr_smwangi
+Password: CauliExpert@2025
+
+# Admin
+
+Username: admin01
+Password: Password
+
+---
+
+## 📄 Notes
+
+Anonymous (AI_Engineer)Frontend_Backend_Project_Lead= Wamiq Aahid
+AI_Engineer = Anonymous

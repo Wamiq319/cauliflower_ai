@@ -1,30 +1,43 @@
-Run this command to generate the tailwindcss run it from tailwind_build
-npx tailwindcss -i input.css -o ../apps/ui/static/css/styles.css
-python manage.py runserver
-source venv/bin/activate
-pip install -r requirements.txt
- 
- migrations Script
- 
+# Cauliflower AI – Setup & Credentials
 
-SUPERUSER
-wamiq
-wamiq@email.com
-adminpatextss
+## Tailwind CSS Build
+Run this command from the tailwind_build directory:
+> npx tailwindcss -i input.css -o ../apps/ui/static/css/styles.css
 
+## Python Virtual Environment
+Activate the virtual environment:
+> source venv/bin/activate    # Linux/Mac
+# For Windows:
+> venv\Scripts\activate
 
-farmer registor
-greenfields_john
-SecureFarm2025!
+## Install Dependencies
+> pip install -r requirements.txt
 
+## Run Django Server
+> python manage.py runserver
 
-doctor credentials
-dr_smwangi
-CauliExpert@2025
+## Migrations
+Run migrations to set up the database:
+> python manage.py makemigrations
+> python manage.py migrate
 
-admincredentials
-admin01
-Password
+---
 
+## Sample Accounts
 
+### SUPERUSER
+Username: wamiq  
+Email: wamiq@email.com  
+Password: adminpatextss  
 
+### Farmer
+Username: greenfields_john  
+Password: SecureFarm2025!  
+
+### Doctor
+Username: dr_smwangi  
+Password: CauliExpert@2025  
+
+### Admin
+Username: admin01  
+Password: Password

@@ -1,16 +1,12 @@
 from django.urls import path
-from .views import (
-    landing_page,
-    login_page,
-    register_farmer_page,
-    register_doctor_page,
-)
+from .views import landing_page, login_page, register_farmer_page, register_doctor_page
 from .farmer_views import (
     farmer_dashboard,
     farmer_profile,
     farmer_image_upload,
     farmer_open_case,
     farmer_past_analyses,
+    farmer_events,  # Added missing import
 )
 from .doctor_views import (
     doctor_dashboard,
@@ -20,6 +16,7 @@ from .doctor_views import (
     doctor_cases,
     doctor_case_details,
     doctor_solved_cases,
+    doctor_events,  # Added missing import
 )
 from .admin_views import (
     admin_dashboard,
@@ -30,7 +27,7 @@ from .admin_views import (
 )
 
 urlpatterns = [
-    # Landing and Auth Pages
+    # Landing & Authentication
     path('', landing_page, name='landing'),
     path('login/', login_page, name='login'),
     path('register/farmer/', register_farmer_page, name='register_farmer'),
@@ -42,6 +39,7 @@ urlpatterns = [
     path('dashboard/farmer/upload/', farmer_image_upload, name='farmer_image_upload'),
     path('dashboard/farmer/open-case/', farmer_open_case, name='farmer_open_case'),
     path('dashboard/farmer/analyses/', farmer_past_analyses, name='farmer_past_analyses'),
+    path('dashboard/farmer/events/', farmer_events, name='farmer_events'),
 
     # Doctor Dashboard
     path('dashboard/doctor/', doctor_dashboard, name='doctor_dashboard'),
@@ -51,11 +49,11 @@ urlpatterns = [
     path('dashboard/doctor/cases/', doctor_cases, name='doctor_cases'),
     path('dashboard/doctor/cases/<int:case_id>/', doctor_case_details, name='doctor_case_details'),
     path('dashboard/doctor/solved-cases/', doctor_solved_cases, name='doctor_solved_cases'),
+    path('dashboard/doctor/events/', doctor_events, name='doctor_events'),
 
     # Admin Dashboard
     path('dashboard/admin/', admin_dashboard, name='admin_dashboard'),
- path('dashboard/admin/events/', manage_events, name='admin_manage_events'),
-
+    path('dashboard/admin/events/', manage_events, name='admin_manage_events'),
     path('dashboard/admin/farmers/', manage_farmers, name='manage_farmers'),
     path('dashboard/admin/doctors/', manage_doctors, name='manage_doctors'),
     path('dashboard/admin/profile/', admin_profile, name='admin_profile'),

@@ -131,3 +131,12 @@ def doctor_past_suggestions(request):
     return render(request, 'dashboard/doctor/view_suggestions.html', {
         "past_suggestions": past_suggestions
     }) 
+
+@login_required
+def doctor_events(request):
+    """Display events to doctors (read-only)."""
+    events = Event.objects.all().order_by("-date")
+    return render(request, "dashboard/doctor/doctor_events.html", {
+        "user": request.user,
+        "events": events,
+    })

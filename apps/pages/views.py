@@ -1,29 +1,24 @@
-# Standard Django imports
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import AnonymousUser
-
+from django.shortcuts import render
 
 # =============================================================================
 # LANDING & AUTHENTICATION VIEWS
 # =============================================================================
 
 def landing_page(request):
-    """Landing page for the application."""
+    """Landing page."""
     return render(request, 'landing.html')
 
 
 def login_page(request):
-    """Login page view."""
+    """Login page."""
     return render(request, 'auth/login.html')
 
 
 def register_farmer_page(request):
-    """Farmer registration page view."""
+    """Farmer registration page."""
     return render(request, 'auth/register/register_farmer.html')
 
 
 def register_doctor_page(request):
-    """Doctor registration page view."""
+    """Doctor registration page."""
     return render(request, 'auth/register/register_doctor.html')
-
