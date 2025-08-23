@@ -6,7 +6,9 @@ Run this command from the tailwind_build directory:
 
 ## Python Virtual Environment
 Activate the virtual environment:
+
 > source venv/bin/activate    # Linux/Mac
+
 # For Windows:
 > venv\Scripts\activate
 
@@ -28,7 +30,7 @@ Run migrations to set up the database:
 ### SUPERUSER
 Username: wamiq  
 Email: wamiq@email.com  
-Password: adminpatextss  
+Password: adminpass
 
 ### Farmer
 Username: greenfields_john  

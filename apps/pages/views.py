@@ -1,4 +1,9 @@
 from django.shortcuts import render
+from django.utils import timezone
+
+# Model import for events
+from apps.admin_panel.models import Event
+
 
 # =============================================================================
 # LANDING & AUTHENTICATION VIEWS
@@ -22,3 +27,5 @@ def register_farmer_page(request):
 def register_doctor_page(request):
     """Doctor registration page."""
     return render(request, 'auth/register/register_doctor.html')
+
+

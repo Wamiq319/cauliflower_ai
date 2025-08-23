@@ -1,5 +1,11 @@
 from django.urls import path
-from .views import landing_page, login_page, register_farmer_page, register_doctor_page
+from .views import (
+    landing_page,
+    login_page,
+    register_farmer_page,
+    register_doctor_page,
+
+)
 from .farmer_views import (
     farmer_dashboard,
     farmer_profile,
@@ -57,4 +63,5 @@ urlpatterns = [
     path('dashboard/admin/farmers/', manage_farmers, name='manage_farmers'),
     path('dashboard/admin/doctors/', manage_doctors, name='manage_doctors'),
     path('dashboard/admin/profile/', admin_profile, name='admin_profile'),
+
 ]

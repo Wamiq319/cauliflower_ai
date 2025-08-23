@@ -4,11 +4,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 # Model import for events
-from .models import Event  # Make sure Event model is imported
+from apps.admin_panel.models import Event
+from django.utils import timezone
+
+
 
 # =============================================================================
 # FARMER DASHBOARD VIEWS
 # =============================================================================
+
 
 @login_required
 def farmer_dashboard(request):
@@ -21,10 +25,19 @@ def farmer_dashboard(request):
         {"crop_name": "Cauliflower", "disease_name": "Downy Mildew", "date": "2025-07-22"},
     ]
 
+    # Get nearest upcoming events
+    today = timezone.now().date()
+    next_event = Event.objects.filter(date__gte=today).order_by('date').first()
+    if next_event:
+        upcoming_events = Event.objects.filter(date=next_event.date).order_by('created_at')
+    else:
+        upcoming_events = []
+
     return render(request, 'dashboard/farmer/dashboard.html', {
         "user": user,
         "stats": stats,
-        "recent_detections": recent_detections
+        "recent_detections": recent_detections,
+        "upcoming_events": upcoming_events
     })
 
 

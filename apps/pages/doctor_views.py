@@ -3,6 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from apps.doctors.models import GeneralSuggestion
+from apps.admin_panel.models import Event
+from django.utils import timezone
 
 
 # =============================================================================
@@ -11,27 +13,30 @@ from apps.doctors.models import GeneralSuggestion
 
 @login_required
 def doctor_dashboard(request):
-    """Doctor dashboard with statistics."""
     user = request.user
-    
-    # Check if doctor is approved
     is_approved = getattr(user.doctor_profile, 'is_approved', False) if hasattr(user, 'doctor_profile') else False
     
-    # Get real statistics from the database
     total_suggestions = GeneralSuggestion.objects.filter(doctor=user).count()
-    active_suggestions = GeneralSuggestion.objects.filter(doctor=user).count()  # For now, all suggestions are considered active
-    total_cases_reviewed = 15  # This would come from a Case model when you have one
-    
-    stats = {
-        "total_suggestions": total_suggestions,
-        "active_suggestions": active_suggestions,
-        "total_cases_reviewed": total_cases_reviewed
-    }
-    
+    active_suggestions = total_suggestions
+    total_cases_reviewed = 15
+
+    # Upcoming events for the nearest date
+    today = timezone.now().date()
+    next_event = Event.objects.filter(date__gte=today).order_by('date').first()
+    if next_event:
+        upcoming_events = Event.objects.filter(date=next_event.date).order_by('created_at')
+    else:
+        upcoming_events = []
+
     return render(request, 'dashboard/doctor/dashboard.html', {
         "user": user,
-        "stats": stats,
-        "is_approved": is_approved
+        "stats": {
+            "total_suggestions": total_suggestions,
+            "active_suggestions": active_suggestions,
+            "total_cases_reviewed": total_cases_reviewed,
+        },
+        "is_approved": is_approved,
+        "upcoming_events": upcoming_events,
     })
 
 

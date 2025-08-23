@@ -125,7 +125,7 @@ python manage.py runserver
 
 - **Username:** wamiq
 - **Email:** wamiq@email.com
-- **Password:** adminpatextss
+- **Password:**adminpass
 
 ### Farmer
 
