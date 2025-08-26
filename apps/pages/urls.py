@@ -9,8 +9,6 @@ from .views import (
 from .farmer_views import (
     farmer_dashboard,
     farmer_profile,
-    farmer_open_case,
-    farmer_past_analyses,
     farmer_events,
     farmer_notifications,
 )
@@ -44,8 +42,6 @@ urlpatterns = [
     # Farmer Dashboard
     path('dashboard/farmer/', farmer_dashboard, name='farmer_dashboard'),
     path('dashboard/farmer/profile/', farmer_profile, name='farmer_profile'),
-    path('dashboard/farmer/open-case/', farmer_open_case, name='farmer_open_case'),
-    path('dashboard/farmer/analyses/', farmer_past_analyses, name='farmer_past_analyses'),
     path('dashboard/farmer/events/', farmer_events, name='farmer_events'),
     path('dashboard/farmer/notifications/', farmer_notifications, name='farmer_notifications'),
 

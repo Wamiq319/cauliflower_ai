@@ -46,63 +46,11 @@ def farmer_profile(request):
     """Farmer profile page."""
     user = request.user
     farmer_profile = getattr(user, "farmer_profile", None)
-
     return render(request, "dashboard/farmer/profile.html", {
         "user": user,
         "farmer_profile": farmer_profile,
     })
 
-
-
-
-
-
-
-@login_required
-def farmer_open_case(request):
-    """Open a case for doctor review."""
-    if request.method == 'POST':
-        crop_name = request.POST.get('crop_name')
-        disease_name = request.POST.get('disease_name')
-        messages.success(request, f'Case opened! Doctors will review your {crop_name} case with {disease_name}.')
-    return redirect('farmer_image_upload')
-
-
-@login_required
-def farmer_past_analyses(request):
-    """Past analyses history."""
-    user = request.user
-    past_analyses = [
-        {
-            "crop_name": "Cauliflower",
-            "disease_name": "Black Rot",
-            "date": "2025-07-24",
-            "confidence": "95%",
-            "image_url": "https://via.placeholder.com/150",
-            "suggestions": ["Remove infected leaves", "Apply copper fungicide", "Improve air circulation"]
-        },
-        {
-            "crop_name": "Cauliflower",
-            "disease_name": "Downy Mildew",
-            "date": "2025-07-22",
-            "confidence": "87%",
-            "image_url": "https://via.placeholder.com/150",
-            "suggestions": ["Use resistant varieties", "Ensure proper spacing", "Apply fungicide"]
-        },
-        {
-            "crop_name": "Cauliflower",
-            "disease_name": "Healthy",
-            "date": "2025-07-20",
-            "confidence": "92%",
-            "image_url": "https://via.placeholder.com/150",
-            "suggestions": ["Maintain routine care", "Monitor for pests", "Continue watering schedule"]
-        },
-    ]
-
-    return render(request, 'dashboard/farmer/past_analyses.html', {
-        "user": user,
-        "past_analyses": past_analyses
-    })
 
 
 @login_required
