@@ -3,8 +3,7 @@ from .views import (
     detect_disease_view, 
     open_case_view,
     farmer_cases_list,
-    farmer_case_detail,
-    farmer_close_case_ajax
+    farmer_case_detail
 )
 
 urlpatterns = [
@@ -14,5 +13,4 @@ urlpatterns = [
     # Case management URLs
     path("cases/", farmer_cases_list, name="farmer_cases_list"),
     path("cases/<int:case_id>/", farmer_case_detail, name="farmer_case_detail"),
-    path("cases/<int:case_id>/close/", farmer_close_case_ajax, name="farmer_close_case_ajax"),
 ]

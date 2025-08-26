@@ -2,9 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from django.core.paginator import Paginator
-from django.http import JsonResponse
-from .models import Case, Analysis, CaseSuggestion
+from .models import Case, Analysis
 import random
 from apps.doctors.models import GeneralSuggestion  # Make sure this import is correct
 
@@ -22,8 +20,8 @@ def farmer_cases_list(request):
         case_id = request.POST.get('case_id')
         try:
             case = Case.objects.get(id=case_id, farmer=request.user)
-            if case.status != 'closed':
-                case.status = 'closed'
+            if case.status != 'resolved':
+                case.status = 'resolved'
                 case.save()
                 messages.success(request, f'Case #{case.id} has been closed successfully.')
             else:
@@ -38,68 +36,67 @@ def farmer_cases_list(request):
     })
 
 @login_required
+@login_required
 def farmer_case_detail(request, case_id):
     """Display detailed view of a specific case with option to close it"""
-    case = get_object_or_404(Case, id=case_id, farmer=request.user)
+    # Get the case with all related data including analysis and image
+    case = get_object_or_404(
+        Case.objects.select_related('analysis').prefetch_related('suggestions__doctor'),
+        id=case_id, 
+        farmer=request.user
+    )
+    
+    # Print all case and disease information
+    print(f"=== CASE DETAILS ===")
+    print(f"Case ID: #{case.id}")
+    print(f"Case Title: {case.title}")
+    print(f"Case Status: {case.status}")
+    print(f"Case Priority: {case.priority}")
+    print(f"Case Description: {case.description}")
+    print(f"Created: {case.created_at}")
+    print(f"Updated: {case.updated_at}")
+    
+    print(f"\n=== DISEASE ANALYSIS ===")
+    print(f"Crop: {case.analysis.crop_name}")
+    print(f"Disease: {case.analysis.disease_name}")
+    print(f"Analysis Date: {case.analysis.analysis_date}")
+    if case.analysis.image:
+        print(f"Image Path: {case.analysis.image.path}")
+        print(f"Image URL: {case.analysis.image.url}")
+        print(f"Image Name: {case.analysis.image.name}")
+    else:
+        print(f"Image: No image attached")
+    
+    print(f"\n=== FARMER INFO ===")
+    print(f"Farmer: {case.farmer.username} ({case.farmer.first_name} {case.farmer.last_name})")
+    
+    print(f"\n=== SUGGESTIONS ===")
+    suggestions = case.suggestions.all().select_related('doctor')
+    print(f"Total Suggestions: {suggestions.count()}")
+    for i, suggestion in enumerate(suggestions, 1):
+        print(f"  {i}. By Dr. {suggestion.doctor.first_name} {suggestion.doctor.last_name}")
+        print(f"     Title: {suggestion.title}")
+        print(f"     Created: {suggestion.created_at}")
     
     if request.method == 'POST':
         # Handle case closure
         if 'close_case' in request.POST:
-            if case.status != 'closed':
-                case.status = 'closed'
+            if case.status != 'resolved':
+                case.status = 'resolved'
                 case.save()
+                print(f"\n=== CASE STATUS UPDATE ===")
+                print(f"Case #{case.id} marked as RESOLVED")
                 messages.success(request, f'Case #{case.id} has been closed successfully.')
             else:
+                print(f"\n=== CASE STATUS UPDATE ===")
+                print(f"Case #{case.id} is already resolved")
                 messages.info(request, f'Case #{case.id} is already closed.')
             return redirect('farmer_case_detail', case_id=case.id)
-        
-        # Handle case reopening (if needed)
-        elif 'reopen_case' in request.POST:
-            if case.status == 'closed':
-                case.status = 'open'
-                case.save()
-                messages.success(request, f'Case #{case.id} has been reopened.')
-            else:
-                messages.info(request, f'Case #{case.id} is already open.')
-            return redirect('farmer_case_detail', case_id=case.id)
-    
-    # Get all suggestions for this case
-    suggestions = case.suggestions.all().select_related('doctor')
     
     return render(request, 'dashboard/farmer/case_detail.html', {
         'case': case,
         'suggestions': suggestions
     })
-
-@login_required
-def farmer_close_case_ajax(request, case_id):
-    """AJAX endpoint for closing a case"""
-    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        try:
-            case = Case.objects.get(id=case_id, farmer=request.user)
-            if case.status != 'closed':
-                case.status = 'closed'
-                case.save()
-                return JsonResponse({
-                    'success': True,
-                    'message': f'Case #{case.id} closed successfully.',
-                    'new_status': 'closed'
-                })
-            else:
-                return JsonResponse({
-                    'success': False,
-                    'message': f'Case #{case.id} is already closed.'
-                })
-        except Case.DoesNotExist:
-            return JsonResponse({
-                'success': False,
-                'message': 'Case not found or access denied.'
-            }, status=404)
-    
-    return JsonResponse({
-        'success': False,
-        'message': 'Invalid request method.'
-    }, status=400)
 
 # =============================================================================
 # DISEASE DETECTION & CASE CREATION VIEWS

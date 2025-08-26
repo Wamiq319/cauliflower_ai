@@ -20,8 +20,8 @@
         <span class="font-semibold">Crop:</span> {{ case.analysis.crop_name }}
       </div>
       <div>
-        <span class="font-semibold">Disease:</span> {{
-        case.analysis.disease_name }}
+        <span class="font-semibold">Disease:</span>
+        {{case.analysis.disease_name }}
       </div>
       <div>
         <span class="font-semibold">Created:</span>
@@ -31,6 +31,31 @@
         <span class="font-semibold">Priority:</span>
         <span class="capitalize">{{ case.priority }}</span>
       </div>
+    </div>
+  </div>
+
+  <!-- Case Image Section -->
+  <div class="mb-8">
+    <h3
+      class="text-lg font-semibold text-green-800 mb-3 flex items-center gap-2"
+    >
+      <span>📷</span> Plant Image
+    </h3>
+    <div class="bg-green-50 rounded-lg p-4">
+      {% if case.analysis.image %}
+      <div class="flex justify-center">
+        <img
+          src="{{ case.analysis.image.url }}"
+          alt="Plant Image for Case #{{ case.id }}"
+          class="max-w-full h-auto max-h-96 object-contain rounded-lg border border-green-200 shadow-sm"
+        />
+      </div>
+      {% else %}
+      <div class="text-center py-8">
+        <div class="text-4xl mb-2">🌱</div>
+        <p class="text-green-600">No image available for this case.</p>
+      </div>
+      {% endif %}
     </div>
   </div>
 
