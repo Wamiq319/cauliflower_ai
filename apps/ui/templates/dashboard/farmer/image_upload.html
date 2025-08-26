@@ -1,6 +1,20 @@
 {% extends "dashboard/farmer/base_farmer.html" %} {% block dashboard_content %}
 
 <div class="w-full mx-auto bg-white rounded-2xl shadow p-8">
+  <!-- Success Messages -->
+  {% if messages %}
+  <div class="mb-6">
+    {% for message in messages %}
+    <div
+      class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-center gap-2"
+    >
+      <span>✅</span>
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
   <!-- Upload Header -->
   <div class="border-b border-green-200 pb-6 mb-6">
     <h2 class="text-2xl font-bold text-green-800 mb-2 flex items-center gap-2">
@@ -17,7 +31,17 @@
     <!-- Top Row: Upload (left) + Open Case Form (right) -->
     <div class="flex gap-6">
       <!-- Left Container: Image Upload/Preview -->
-      <div class="w-1/2">
+      <div
+        class="w-1/2"
+        id="uploadSection"
+        {%
+        if
+        result
+        %}style="display: none;"
+        {%
+        endif
+        %}
+      >
         <div
           class="bg-green-50 rounded-lg p-4 border border-green-200 min-h-96"
         >
@@ -29,13 +53,15 @@
 
           <form
             method="POST"
+            action="{% url 'farmer_detect_disease' %}"
             enctype="multipart/form-data"
             class="flex flex-col space-y-4"
           >
             {% csrf_token %}
+            <input type="hidden" id="imageData" name="image_data" value="" />
             <div class="flex-1 flex flex-col items-center justify-center">
               <div
-                class="w-56 h-56 border-2 border-dashed border-green-300 rounded-lg p-4 text-center hover:border-green-400 transition flex flex-col items-center justify-center"
+                class="w-56 h-56 border-2 border-dashed border-green-300 rounded-lg p-4 text-center hover:border-green-400 transition flex flex-col items-center justify-center relative overflow-hidden"
                 id="uploadArea"
               >
                 <input
@@ -46,49 +72,52 @@
                   class="hidden"
                   id="imageInput"
                 />
-                <label for="imageInput" class="cursor-pointer">
-                  <span class="text-3xl mb-2 block">📷</span>
-                  <span class="text-green-700 font-medium text-sm"
-                    >Click to upload image</span
-                  >
-                  <p class="text-xs text-green-600 mt-1">
-                    JPG, PNG, or GIF up to 10MB
-                  </p>
-                </label>
-              </div>
 
-              <!-- Image Preview -->
-              <div id="imagePreview" class="hidden mt-4">
-                <div class="text-center">
-                  <h4
-                    class="text-sm font-medium text-green-800 mb-2 flex items-center gap-2 justify-center"
+                <!-- Upload Interface (shown when no image) -->
+                <div
+                  id="uploadInterface"
+                  class="w-full h-full flex flex-col items-center justify-center"
+                >
+                  <label
+                    for="imageInput"
+                    class="cursor-pointer w-full h-full flex flex-col items-center justify-center"
                   >
-                    <span>🖼️</span> Image Preview
-                  </h4>
-                  <div class="flex items-center justify-center">
-                    <div
-                      class="w-56 h-56 bg-white rounded-lg shadow-md border border-green-200 flex items-center justify-center overflow-hidden"
+                    <span class="text-3xl mb-2 block">📷</span>
+                    <span class="text-green-700 font-medium text-sm"
+                      >Click to upload image</span
                     >
-                      <img
-                        id="previewImg"
-                        src=""
-                        alt="Plant Image Preview"
-                        class="w-full h-full object-contain"
-                      />
-                    </div>
-                  </div>
-                  <div class="mt-2 flex items-center justify-between">
-                    <span
-                      id="fileName"
-                      class="text-xs text-green-700 font-medium"
-                    ></span>
+                    <p class="text-xs text-green-600 mt-1">
+                      JPG, PNG, or GIF up to 10MB
+                    </p>
+                  </label>
+                </div>
+
+                <!-- Image Preview (shown when image is selected) -->
+                <div
+                  id="imagePreview"
+                  class="hidden w-full h-full flex flex-col items-center justify-center"
+                >
+                  <img
+                    id="previewImg"
+                    src=""
+                    alt="Plant Image Preview"
+                    class="w-full h-full object-contain rounded-lg"
+                  />
+                  <div class="absolute top-2 right-2 flex gap-2">
                     <button
                       type="button"
                       onclick="removeImage()"
-                      class="text-red-600 hover:text-red-800 text-xs font-medium flex items-center gap-1"
+                      class="bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm transition"
+                      title="Remove image"
                     >
-                      <span>🗑️</span> Remove
+                      🗑️
                     </button>
+                  </div>
+                  <div class="absolute bottom-2 left-2 right-2">
+                    <span
+                      id="fileName"
+                      class="text-xs text-white font-medium bg-black bg-opacity-50 px-2 py-1 rounded"
+                    ></span>
                   </div>
                 </div>
               </div>
@@ -98,6 +127,7 @@
               <button
                 type="submit"
                 class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium flex items-center gap-2"
+                id="analyzeButton"
               >
                 <span>🔍</span> Analyze Image
               </button>
@@ -131,11 +161,6 @@
             {% csrf_token %}
             <input
               type="hidden"
-              name="analysis_id"
-              value="{{ result.analysis_id|default:'' }}"
-            />
-            <input
-              type="hidden"
               name="disease_name"
               value="{{ result.disease_name|default:'' }}"
             />
@@ -143,6 +168,11 @@
               type="hidden"
               name="crop_name"
               value="{{ result.crop_name|default:'' }}"
+            />
+            <input
+              type="hidden"
+              name="disease_key"
+              value="{{ result.disease_key|default:'' }}"
             />
 
             <div>
@@ -193,89 +223,187 @@
 
       {% if result %}
       <!-- Disease Info -->
-      <div class="bg-white rounded-lg p-4 mb-4 border border-green-200 text-sm">
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <span class="font-semibold text-green-800">Crop:</span>
-            <span class="text-green-700 ml-1">{{ result.crop_name }}</span>
+      <div
+        class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 mb-6 border border-green-200"
+        data-result="true"
+      >
+        <h4
+          class="text-lg font-bold text-green-800 mb-4 flex items-center gap-2"
+        >
+          <span>🔬</span> Analysis Summary
+        </h4>
+
+        <!-- Image and Analysis Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <!-- Uploaded Image -->
+          <div class="md:col-span-1">
+            <div class="bg-white rounded-lg p-4 border border-green-200">
+              <h5
+                class="text-sm font-bold text-green-800 mb-3 flex items-center gap-2"
+              >
+                <span>📷</span> Uploaded Image
+              </h5>
+              <div class="flex justify-center">
+                <img
+                  id="analysisPreviewImg"
+                  src=""
+                  alt="Plant Image"
+                  class="w-full h-48 object-contain rounded-lg border border-green-200"
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <span class="font-semibold text-green-800">Disease:</span>
-            <span class="text-green-700 ml-1">{{ result.disease_name }}</span>
-          </div>
-          <div>
-            <span class="font-semibold text-green-800">Confidence:</span>
-            <span class="text-green-700 ml-1"
-              >{{ result.confidence|floatformat:0 }}%</span
-            >
-          </div>
-          <div>
-            <span class="font-semibold text-green-800">Date:</span>
-            <span class="text-green-700 ml-1">{{ result.analysis_date }}</span>
+
+          <!-- Analysis Details -->
+          <div class="md:col-span-2">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div
+                class="bg-white rounded-lg p-3 border border-green-200 text-center"
+              >
+                <div class="text-2xl mb-1">🌱</div>
+                <div
+                  class="text-xs font-semibold text-green-600 uppercase tracking-wide"
+                >
+                  Crop
+                </div>
+                <div class="text-sm font-bold text-green-800">
+                  {{ result.crop_name }}
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-lg p-3 border border-red-200 text-center"
+              >
+                <div class="text-2xl mb-1">🦠</div>
+                <div
+                  class="text-xs font-semibold text-red-600 uppercase tracking-wide"
+                >
+                  Disease
+                </div>
+                <div class="text-sm font-bold text-red-800">
+                  {{ result.disease_name }}
+                </div>
+              </div>
+              <div
+                class="bg-white rounded-lg p-3 border border-blue-200 text-center"
+              >
+                <div class="text-2xl mb-1">🔬</div>
+                <div
+                  class="text-xs font-semibold text-blue-600 uppercase tracking-wide"
+                >
+                  Status
+                </div>
+                <div class="text-sm font-bold text-blue-800">Analyzed</div>
+              </div>
+              <div
+                class="bg-white rounded-lg p-3 border border-purple-200 text-center"
+              >
+                <div class="text-2xl mb-1">📅</div>
+                <div
+                  class="text-xs font-semibold text-purple-600 uppercase tracking-wide"
+                >
+                  Date
+                </div>
+                <div class="text-sm font-bold text-purple-800">
+                  {{ result.analysis_date }}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {% if result.suggestions %}
-      <div class="space-y-3">
+      <div class="space-y-4">
         <h4
-          class="text-base font-bold text-green-800 mb-2 flex items-center gap-2"
+          class="text-lg font-bold text-green-800 mb-4 flex items-center gap-2"
         >
-          <span>💡</span> Expert Recommendations
+          <span>🎯</span> Expert Recommendations
         </h4>
         {% for suggestion in result.suggestions %}
         <div
-          class="bg-white border border-green-200 rounded-lg p-3 shadow-sm text-sm"
+          class="bg-white border border-green-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
         >
-          <div class="border-b border-green-200 pb-2 mb-2">
-            <h5 class="text-sm font-bold text-green-800 mb-1">
-              {{ suggestion.title }}
-            </h5>
-            <div class="flex items-center justify-between">
-              <span class="text-xs text-green-600"
-                >By {{ suggestion.suggested_by }}</span
+          <!-- Header Section -->
+          <div class="border-b border-green-200 pb-4 mb-4">
+            <div class="flex items-start justify-between mb-2">
+              <h5
+                class="text-lg font-bold text-green-800 flex items-center gap-2"
               >
+                <span>💡</span> {{ suggestion.title }}
+              </h5>
               <span
-                class="px-2 py-0.5 rounded-full text-xs font-medium {% if suggestion.priority == 'high' %}bg-red-100 text-red-800 {% elif suggestion.priority == 'medium' %}bg-yellow-100 text-yellow-800 {% else %}bg-green-100 text-green-800{% endif %}"
+                class="px-3 py-1 rounded-full text-xs font-bold {% if suggestion.priority == 'high' %}bg-red-100 text-red-800 border border-red-200 {% elif suggestion.priority == 'medium' %}bg-yellow-100 text-yellow-800 border border-yellow-200 {% else %}bg-green-100 text-green-800 border border-green-200{% endif %}"
               >
                 {{ suggestion.priority|title }} Priority
               </span>
             </div>
+            <div class="flex items-center gap-2 text-sm text-green-600">
+              <span>👨‍⚕️</span>
+              <span class="font-medium">Dr. {{ suggestion.suggested_by }}</span>
+            </div>
           </div>
-          <div class="mb-2">
-            <h6
-              class="uppercase text-xs font-semibold text-green-700 mb-1 tracking-wide flex items-center gap-1"
+
+          <!-- Content Grid -->
+          <div class="grid gap-4">
+            <!-- Treatment Section -->
+            <div
+              class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200"
             >
-              <span>💊</span> Treatment
-            </h6>
-            <p class="text-green-700 bg-green-50 rounded p-2 text-xs">
-              {{ suggestion.treatment }}
-            </p>
-          </div>
-          <div class="mb-2">
-            <h6
-              class="uppercase text-xs font-semibold text-green-700 mb-1 tracking-wide flex items-center gap-1"
+              <h6
+                class="text-sm font-bold text-blue-800 mb-2 flex items-center gap-2"
+              >
+                <span>💊</span> Treatment Plan
+              </h6>
+              <p class="text-blue-700 text-sm leading-relaxed">
+                {{ suggestion.treatment }}
+              </p>
+            </div>
+
+            <!-- Prevention Section -->
+            <div
+              class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 border border-green-200"
             >
-              <span>🛡️</span> Prevention
-            </h6>
-            <p class="text-green-700 bg-green-50 rounded p-2 text-xs">
-              {{ suggestion.prevention }}
-            </p>
-          </div>
-          {% if suggestion.best_practices %}
-          <div>
-            <h6
-              class="uppercase text-xs font-semibold text-green-700 mb-1 tracking-wide flex items-center gap-1"
+              <h6
+                class="text-sm font-bold text-green-800 mb-2 flex items-center gap-2"
+              >
+                <span>🛡️</span> Prevention Measures
+              </h6>
+              <p class="text-green-700 text-sm leading-relaxed">
+                {{ suggestion.prevention }}
+              </p>
+            </div>
+
+            {% if suggestion.best_practices %}
+            <!-- Best Practices Section -->
+            <div
+              class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200"
             >
-              <span>✅</span> Best Practices
-            </h6>
-            <p class="text-green-700 bg-green-50 rounded p-2 text-xs">
-              {{ suggestion.best_practices }}
-            </p>
+              <h6
+                class="text-sm font-bold text-purple-800 mb-2 flex items-center gap-2"
+              >
+                <span>✅</span> Best Practices
+              </h6>
+              <p class="text-purple-700 text-sm leading-relaxed">
+                {{ suggestion.best_practices }}
+              </p>
+            </div>
+            {% endif %}
           </div>
-          {% endif %}
         </div>
         {% endfor %}
+      </div>
+      {% else %}
+      <div
+        class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center"
+      >
+        <span class="text-4xl block mb-3">🔍</span>
+        <h4 class="text-lg font-bold text-yellow-800 mb-2">
+          No Recommendations Available
+        </h4>
+        <p class="text-yellow-700 text-sm">
+          No expert recommendations found for this disease. Consider opening a
+          case for personalized advice.
+        </p>
       </div>
       {% endif %} {% else %}
       <div class="h-full flex items-center justify-center">
@@ -284,6 +412,18 @@
           <p class="text-base font-medium">Upload an image to start analysis</p>
           <p class="text-sm">Results will appear here after analysis</p>
         </div>
+      </div>
+      {% endif %}
+
+      <!-- Analyze New Image Button -->
+      {% if result %}
+      <div class="mt-6 text-center">
+        <a
+          href="{% url 'farmer_detect_disease' %}"
+          class="inline-block px-8 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium flex items-center justify-center gap-2 mx-auto"
+        >
+          <span>🔄</span> Analyze New Image
+        </a>
       </div>
       {% endif %}
     </div>
@@ -299,14 +439,42 @@
         const reader = new FileReader();
         reader.onload = function (e) {
           const previewImg = document.getElementById("previewImg");
+          const analysisPreviewImg =
+            document.getElementById("analysisPreviewImg");
           const fileName = document.getElementById("fileName");
           const imagePreview = document.getElementById("imagePreview");
-          const uploadArea = document.getElementById("uploadArea");
+          const uploadInterface = document.getElementById("uploadInterface");
+          const imageData = document.getElementById("imageData");
 
-          previewImg.src = e.target.result;
-          fileName.textContent = file.name;
-          imagePreview.classList.remove("hidden");
-          uploadArea.classList.add("hidden");
+          // Update both preview images
+          if (previewImg) {
+            previewImg.src = e.target.result;
+          }
+          if (analysisPreviewImg) {
+            analysisPreviewImg.src = e.target.result;
+          }
+
+          // Store image data
+          if (imageData) {
+            imageData.value = e.target.result;
+          }
+          if (fileName) {
+            fileName.textContent = file.name;
+          }
+
+          // Save image data to localStorage for persistence
+          localStorage.setItem("uploadedImageData", e.target.result);
+          localStorage.setItem("uploadedFileName", file.name);
+
+          // Show image preview and hide upload interface
+          if (imagePreview) {
+            imagePreview.classList.remove("hidden");
+          }
+          if (uploadInterface) {
+            uploadInterface.classList.add("hidden");
+          }
+
+          console.log("Image uploaded successfully:", file.name);
         };
         reader.readAsDataURL(file);
       }
@@ -315,12 +483,66 @@
   function removeImage() {
     const imageInput = document.getElementById("imageInput");
     const imagePreview = document.getElementById("imagePreview");
-    const uploadArea = document.getElementById("uploadArea");
+    const uploadInterface = document.getElementById("uploadInterface");
+    const imageData = document.getElementById("imageData");
+    const previewImg = document.getElementById("previewImg");
+    const analysisPreviewImg = document.getElementById("analysisPreviewImg");
 
     imageInput.value = "";
+    imageData.value = "";
+
+    // Clear localStorage
+    localStorage.removeItem("uploadedImageData");
+    localStorage.removeItem("uploadedFileName");
+
+    // Hide image preview and show upload interface
     imagePreview.classList.add("hidden");
-    uploadArea.classList.remove("hidden");
+    uploadInterface.classList.remove("hidden");
+
+    // Clear both preview images
+    if (previewImg) {
+      previewImg.src = "";
+    }
+    if (analysisPreviewImg) {
+      analysisPreviewImg.src = "";
+    }
   }
+
+  // Keep image visible after form submission if there's a result
+  document.addEventListener("DOMContentLoaded", function () {
+    const imageData = document.getElementById("imageData");
+    const analysisPreviewImg = document.getElementById("analysisPreviewImg");
+
+    // Restore image if we have stored data
+    if (imageData && imageData.value) {
+      const previewImg = document.getElementById("previewImg");
+      const imagePreview = document.getElementById("imagePreview");
+      const uploadInterface = document.getElementById("uploadInterface");
+
+      if (previewImg) {
+        previewImg.src = imageData.value;
+      }
+      if (analysisPreviewImg) {
+        analysisPreviewImg.src = imageData.value;
+      }
+
+      // Show image preview and hide upload interface
+      if (imagePreview) {
+        imagePreview.classList.remove("hidden");
+      }
+      if (uploadInterface) {
+        uploadInterface.classList.add("hidden");
+      }
+    }
+
+    // Always try to restore image from localStorage for analysis results
+    if (analysisPreviewImg) {
+      const savedImageData = localStorage.getItem("uploadedImageData");
+      if (savedImageData) {
+        analysisPreviewImg.src = savedImageData;
+      }
+    }
+  });
 </script>
 
 {% endblock %}

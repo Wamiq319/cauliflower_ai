@@ -95,7 +95,12 @@
       >
         💾 Save Event
       </button>
-      <a href="{% url 'admin_manage_events' %}"> 📋 View All Events </a>
+      <a
+        href="{% url 'admin_manage_events' %}"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"
+      >
+        📋 View All Events
+      </a>
     </div>
   </form>
 </div>

@@ -53,56 +53,9 @@ def farmer_profile(request):
     })
 
 
-@login_required
-def farmer_image_upload(request):
-    """Image upload and AI analysis for farmers."""
-    user = request.user
-    result = None
-    uploaded_image = None
 
-    if request.method == 'POST':
-        uploaded_file = request.FILES.get('plant_image')
 
-        if uploaded_file:
-            # Mock AI analysis result
-            result = {
-                "crop_name": "Cauliflower",
-                "disease_name": "Black Rot",
-                "confidence": "92%",
-                "uploaded_image": uploaded_file.name,
-                "analysis_date": "2025-01-17",
-                "analysis_id": "ANALYSIS_001",
-                "suggestions": [
-                    {
-                        "title": "Immediate Treatment for Black Rot",
-                        "disease_type": "black_rot",
-                        "treatment": "Remove infected parts. Apply copper fungicide. Ensure air circulation.",
-                        "prevention": "Use resistant varieties. Avoid overhead watering.",
-                        "best_practices": "Monitor plants regularly. Keep field clean.",
-                        "priority": "high",
-                        "suggested_by": "Dr. Adeel Nazir"
-                    },
-                    {
-                        "title": "Cultural Control Methods",
-                        "disease_type": "black_rot",
-                        "treatment": "Strict sanitation. Remove infected material.",
-                        "prevention": "Crop rotation. Raised beds for drainage.",
-                        "best_practices": "Disinfect tools. Maintain soil pH 6-7.",
-                        "priority": "medium",
-                        "suggested_by": "Dr. Sara Khan"
-                    }
-                ]
-            }
-            uploaded_image = uploaded_file.name
-            messages.success(request, f'Image analyzed successfully! Detected: {result["disease_name"]}')
-        else:
-            messages.error(request, 'Please select an image to upload.')
 
-    return render(request, 'dashboard/farmer/image_upload.html', {
-        "user": user,
-        "result": result,
-        "uploaded_image": uploaded_image
-    })
 
 
 @login_required

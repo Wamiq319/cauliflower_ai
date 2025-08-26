@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'apps.doctors',
     'apps.admin_panel',
     'apps.pages',
-
+    'apps.farmers',
 ]
 
 # Tailwind Settings
@@ -106,6 +106,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'apps/ui/static',  # <-- UPDATE THIS LINE
 ]
+
+# Media files (Uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
