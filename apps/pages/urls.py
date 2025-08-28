@@ -17,9 +17,6 @@ from .doctor_views import (
     doctor_profile,
     doctor_suggest,
     doctor_past_suggestions,
-    doctor_cases,
-    doctor_case_details,
-    doctor_solved_cases,
     doctor_events,
     doctor_notifications,
 )
@@ -50,9 +47,6 @@ urlpatterns = [
     path('dashboard/doctor/profile/', doctor_profile, name='doctor_profile'),
     path('dashboard/doctor/suggest/', doctor_suggest, name='doctor_suggest'),
     path('dashboard/doctor/view_suggestions/', doctor_past_suggestions, name='doctor_past_suggestions'),
-    path('dashboard/doctor/cases/', doctor_cases, name='doctor_cases'),
-    path('dashboard/doctor/cases/<int:case_id>/', doctor_case_details, name='doctor_case_details'),
-    path('dashboard/doctor/solved-cases/', doctor_solved_cases, name='doctor_solved_cases'),
     path('dashboard/doctor/events/', doctor_events, name='doctor_events'),
     path('dashboard/doctor/notifications/', doctor_notifications, name='doctor_notifications'),
 

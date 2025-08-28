@@ -58,68 +58,7 @@ def doctor_suggest(request):
     return redirect('doctor_create_suggestion')
 
 
-# =============================================================================
-# DOCTOR CASE MANAGEMENT VIEWS
-# =============================================================================
 
-@login_required
-def doctor_cases(request):
-    """List of pending cases for doctors."""
-    # Mock data for pending cases
-    cases = [
-        {"id": 1, "farmer_name": "Ali Khan", "disease_name": "Black Rot", "date": "2025-07-24", "status": "urgent", "confidence": "92%"},
-        {"id": 2, "farmer_name": "Sara Ahmed", "disease_name": "Downy Mildew", "date": "2025-07-23", "status": "normal", "confidence": "87%"},
-        {"id": 3, "farmer_name": "Raza Shah", "disease_name": "Bacterial Spot", "date": "2025-07-22", "status": "normal", "confidence": "78%"},
-    ]
-    return render(request, 'dashboard/doctor/cases.html', {
-        "cases": cases
-    })
-
-
-@login_required
-def doctor_case_details(request, case_id):
-    """Detailed view of a specific case."""
-    case = {
-        "id": case_id,
-        "farmer_name": "Ali Khan",
-        "date": "2025-07-24",
-        "status": "urgent",
-        "disease_name": "Black Rot",
-        "confidence": "92%",
-        "image": {"url": "/static/image/Logo.png"}  # Mock image
-    }
-    return render(request, 'dashboard/doctor/case_details.html', {
-        "case": case
-    })
-
-
-@login_required
-def doctor_solved_cases(request):
-    """List of solved cases."""
-    # Mock data for solved cases
-    solved_cases = [
-        {
-            "id": 1,
-            "farmer_name": "Ali Khan",
-            "original_disease": "Black Rot",
-            "doctor_diagnosis": "Confirmed: Black Rot",
-            "treatment": "Apply copper-based fungicide weekly for 3 weeks",
-            "prevention": "Ensure proper plant spacing and avoid overhead watering",
-            "solved_date": "2025-07-20"
-        },
-        {
-            "id": 2,
-            "farmer_name": "Sara Ahmed",
-            "original_disease": "Downy Mildew",
-            "doctor_diagnosis": "Confirmed: Downy Mildew",
-            "treatment": "Use fungicides containing mancozeb every 7 days",
-            "prevention": "Improve air circulation and avoid overhead watering",
-            "solved_date": "2025-07-18"
-        }
-    ]
-    return render(request, 'dashboard/doctor/solved_cases.html', {
-        "solved_cases": solved_cases
-    })
 
 
 # =============================================================================
