@@ -6,7 +6,7 @@ from .models import Case, Analysis,CaseMessage
 import random
 from apps.doctors.models import GeneralSuggestion  # Make sure this import is correct
 from django import forms
-
+from apps.accounts.models import CustomUser 
 
 # =============================================================================
 # CASE MESSAGE FORM
@@ -132,66 +132,43 @@ def farmer_cases_list(request):
     })
 
 
+
 @login_required
 def farmer_case_detail(request, case_id):
-    """Display detailed view of a specific case with option to close it"""
-    # Get the case with all related data including analysis and image
+    """Display case details and handle farmer chat messages"""
     case = get_object_or_404(
-        Case.objects.select_related('analysis').prefetch_related('suggestions__doctor'),
-        id=case_id, 
+        Case.objects.select_related('analysis', 'assigned_doctor'),
+        id=case_id,
         farmer=request.user
     )
-    
-    # Print all case and disease information
-    print(f"=== CASE DETAILS ===")
-    print(f"Case ID: #{case.id}")
-    print(f"Case Title: {case.title}")
-    print(f"Case Status: {case.status}")
-    print(f"Case Priority: {case.priority}")
-    print(f"Case Description: {case.description}")
-    print(f"Created: {case.created_at}")
-    print(f"Updated: {case.updated_at}")
-    
-    print(f"\n=== DISEASE ANALYSIS ===")
-    print(f"Crop: {case.analysis.crop_name}")
-    print(f"Disease: {case.analysis.disease_name}")
-    print(f"Analysis Date: {case.analysis.analysis_date}")
-    if case.analysis.image:
-        print(f"Image Path: {case.analysis.image.path}")
-        print(f"Image URL: {case.analysis.image.url}")
-        print(f"Image Name: {case.analysis.image.name}")
+
+    # Add concatenated doctor name
+    if case.assigned_doctor:
+        case.assigned_doctor_full_name = f"{case.assigned_doctor.first_name} {case.assigned_doctor.last_name}"
     else:
-        print(f"Image: No image attached")
-    
-    print(f"\n=== FARMER INFO ===")
-    print(f"Farmer: {case.farmer.username} ({case.farmer.first_name} {case.farmer.last_name})")
-    
-    print(f"\n=== SUGGESTIONS ===")
-    suggestions = case.suggestions.all().select_related('doctor')
-    print(f"Total Suggestions: {suggestions.count()}")
-    for i, suggestion in enumerate(suggestions, 1):
-        print(f"  {i}. By Dr. {suggestion.doctor.first_name} {suggestion.doctor.last_name}")
-        print(f"     Title: {suggestion.title}")
-        print(f"     Created: {suggestion.created_at}")
-    
+        case.assigned_doctor_full_name = None
+
+    # Chat form
     if request.method == 'POST':
-        # Handle case closure
-        if 'close_case' in request.POST:
-            if case.status != 'resolved':
-                case.status = 'resolved'
-                case.save()
-                print(f"\n=== CASE STATUS UPDATE ===")
-                print(f"Case #{case.id} marked as RESOLVED")
-                messages.success(request, f'Case #{case.id} has been closed successfully.')
-            else:
-                print(f"\n=== CASE STATUS UPDATE ===")
-                print(f"Case #{case.id} is already resolved")
-                messages.info(request, f'Case #{case.id} is already closed.')
+        message_text = request.POST.get('message')
+        if message_text:
+            CaseMessage.objects.create(
+                case=case,
+                sender=request.user,
+                message=message_text
+            )
             return redirect('farmer_case_detail', case_id=case.id)
-    
+        elif 'close_case' in request.POST and case.status != 'resolved':
+            case.status = 'resolved'
+            case.save()
+            messages.success(request, f"Case #{case.id} marked as resolved.")
+            return redirect('farmer_case_detail', case_id=case.id)
+
+    messages_qs = case.messages.select_related('sender').all()
+
     return render(request, 'dashboard/farmer/case_detail.html', {
         'case': case,
-        'suggestions': suggestions
+        'messages_qs': messages_qs
     })
 
 # =============================================================================
@@ -251,44 +228,50 @@ def detect_disease_view(request):
 
     return render(request, "dashboard/farmer/image_upload.html", {"result": result, "doctor_list": doctor_list})
 
+
 @login_required
 def open_case_view(request):
-    """Open a new case based on analysis results"""
+    """Open a new case based on analysis results and assign a doctor"""
     if request.method == "POST":
         disease_name = request.POST.get("disease_name")
         crop_name = request.POST.get("crop_name")
         case_notes = request.POST.get("case_notes")
-        disease_key = request.POST.get("disease_key")
-        
+        doctor_id = request.POST.get("doctor_id")  # Selected doctor
+
         # Validate required fields
-        if not disease_name or not crop_name:
-            messages.error(request, 'Missing required fields.')
+        if not disease_name or not doctor_id:
+            messages.error(request, 'Please select a doctor and fill all required fields.')
             return redirect('farmer_detect_disease')
         
         # Create analysis record
         analysis = Analysis.objects.create(
             farmer=request.user,
-            crop_name=crop_name,
+            crop_name="Cauliflowerb",
             disease_name=disease_name,
         )
-        
-        # Determine priority based on disease severity
-        priority = 'medium'
-        urgent_diseases = ['black_rot', 'bacterial_spot_rot']
-        if disease_key in urgent_diseases:
-            priority = 'high'
-        
-        # Create case
+        # Fetch selected doctor if provided
+        assigned_doctor = None
+        if doctor_id:
+            try:
+                assigned_doctor = CustomUser.objects.get(id=doctor_id, role='doctor')
+            except CustomUser.DoesNotExist:
+                messages.warning(request, 'Selected doctor not found. Case will be unassigned.')
+
+        # Create case with fixed priority
         case = Case.objects.create(
             farmer=request.user,
             analysis=analysis,
             title=f"Case for {crop_name} - {disease_name}",
             description=case_notes or f"Need help with {disease_name} on {crop_name}",
-            priority=priority,
-            status='open'
+            priority='medium',  # FIXED
+            status='open',
+            assigned_doctor=assigned_doctor  # Make sure Case model has this field
         )
-        
-        messages.success(request, f"Case #{case.id} opened successfully! A doctor will review your {crop_name} case with {disease_name}.")
+
+        messages.success(
+            request,
+            f"Case #{case.id} opened successfully! Dr. {assigned_doctor.first_name} will review your {crop_name} case with {disease_name}."
+        )
         return redirect('farmer_case_detail', case_id=case.id)
     
     return redirect('farmer_detect_disease')
