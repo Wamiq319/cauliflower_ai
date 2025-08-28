@@ -2,9 +2,105 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from .models import Case, Analysis
+from .models import Case, Analysis,CaseMessage
 import random
 from apps.doctors.models import GeneralSuggestion  # Make sure this import is correct
+from django import forms
+
+
+# =============================================================================
+# CASE MESSAGE FORM
+# =============================================================================
+class CaseMessageForm(forms.ModelForm):
+    class Meta:
+        model = CaseMessage
+        fields = ['message']
+        widgets = {
+            'message': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Type your message...'})
+        }
+
+# =============================================================================
+# GLOBAL DISEASE DATA
+# =============================================================================
+DISEASE_GLOBAL_DATA = {
+    "black_rot": {
+        "prevention": [
+            "Seedling Stage: Sterilize trays and pots",
+            "Ensure seedlings are disease-free",
+            "Maintain proper spacing",
+            "Vegetative Stage: Prune affected leaves",
+            "Avoid shaded or damp areas",
+            "Use mulch",
+            "Flowering Stage: Avoid overhead watering",
+            "Monitor humidity",
+            "Ventilate greenhouse",
+            "Fruiting Stage: Remove infected fruits",
+            "Rotate crops",
+        ],
+        "treatment": [
+            "Seedling Stage: Spray copper-based fungicide weekly if infection detected",
+            "Remove infected seedlings",
+            "Vegetative Stage: Apply fungicide to affected areas",
+            "Prune infected leaves",
+            "Flowering Stage: Spray fungicide early morning or evening",
+            "Remove infected flowers",
+            "Fruiting Stage: Systemic fungicide",
+            "Monitor fruits daily",
+        ],
+        "best_practices": [
+            "Inspect plants daily",
+            "Maintain clean tools",
+            "Record outbreaks for future management",
+        ],
+    },
+    "downy_mildew": {
+        "prevention": [
+            "Seedling Stage: Plant in sunny, ventilated areas",
+            "Avoid water on leaves",
+            "Vegetative Stage: Avoid dense planting",
+            "Do not irrigate at night",
+            "Flowering Stage: Keep humidity below 70%",
+            "Remove affected leaves",
+            "Fruiting Stage: Use drip irrigation",
+            "Harvest promptly",
+        ],
+        "treatment": [
+            "Seedling Stage: Spray neem oil if yellowing detected",
+            "Vegetative Stage: Apply fungicide weekly",
+            "Flowering Stage: Targeted fungicide early morning/evening",
+            "Fruiting Stage: Remove infected fruits",
+            "Apply protective fungicide",
+        ],
+        "best_practices": [
+            "Inspect plants twice a week",
+            "Ensure soil drains well",
+            "Maintain proper crop rotation",
+        ],
+    },
+    "bacterial_spot_rot": {
+        "prevention": [
+            "Seedling Stage: Use certified disease-free seeds",
+            "Sanitize trays and tools",
+            "Vegetative Stage: Avoid overhead irrigation",
+            "Remove infected leaves",
+            "Flowering Stage: Avoid working when leaves are wet",
+            "Fruiting Stage: Rotate crops",
+            "Disinfect harvesting tools",
+        ],
+        "treatment": [
+            "Seedling Stage: Apply copper-based bactericide weekly",
+            "Vegetative Stage: Spot spray infected leaves",
+            "Flowering Stage: Spray bactericide early morning/evening",
+            "Fruiting Stage: Remove infected fruits",
+            "Apply systemic bactericide",
+        ],
+        "best_practices": [
+            "Keep greenhouse ventilated",
+            "Monitor humidity",
+            "Maintain detailed records of outbreaks",
+        ],
+    },
+}
 
 # =============================================================================
 # CASE MANAGEMENT VIEWS
@@ -35,7 +131,7 @@ def farmer_cases_list(request):
         'cases_count': cases.count()
     })
 
-@login_required
+
 @login_required
 def farmer_case_detail(request, case_id):
     """Display detailed view of a specific case with option to close it"""
@@ -106,6 +202,7 @@ def farmer_case_detail(request, case_id):
 def detect_disease_view(request):
     """Detect disease from uploaded plant image"""
     result = None
+    doctor_list = []
     if request.method == "POST" and request.FILES.get("plant_image"):
         image = request.FILES["plant_image"]
 
@@ -127,6 +224,10 @@ def detect_disease_view(request):
         for s in suggestions_qs:
             doctor = s.doctor
             doctor_name = f"{doctor.first_name} {doctor.last_name}".strip()
+            doctor_list.append({
+                "id": doctor.id,
+                "name": doctor_name,
+            })
             if not doctor_name:
                 doctor_name = doctor.username
 
@@ -141,14 +242,14 @@ def detect_disease_view(request):
 
         # Build result object
         result = {
-            "crop_name": "Cauliflower",
             "disease_name": disease_name,
             "analysis_date": timezone.now().strftime("%Y-%m-%d %H:%M"),
             "suggestions": suggestions,
             "disease_key": disease_key,
+            "general_info": DISEASE_GLOBAL_DATA.get(disease_key, {})
         }
 
-    return render(request, "dashboard/farmer/image_upload.html", {"result": result})
+    return render(request, "dashboard/farmer/image_upload.html", {"result": result, "doctor_list": doctor_list})
 
 @login_required
 def open_case_view(request):
