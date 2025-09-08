@@ -14,6 +14,7 @@ Activate the virtual environment:
 
 ## Install Dependencies
 > pip install -r requirements.txt
+pip freeze > requirements.txt
 
 ## Run Django Server
 > python manage.py runserver
@@ -22,6 +23,8 @@ Activate the virtual environment:
 Run migrations to set up the database:
 python manage.py makemigrations accounts admin_panel doctors 
 > python manage.py migrate
+
+
 
 
 

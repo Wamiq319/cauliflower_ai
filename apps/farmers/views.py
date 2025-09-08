@@ -1,12 +1,18 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.utils import timezone
-from .models import Case, Analysis,CaseMessage
+# farmers/views.py
+
 import random
-from apps.doctors.models import GeneralSuggestion  # Make sure this import is correct
+
 from django import forms
-from apps.accounts.models import CustomUser 
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
+
+from apps.accounts.models import CustomUser
+from apps.doctors.models import GeneralSuggestion
+
+from .ai_service import predict_one_image
+from .models import Case, Analysis, CaseMessage
 
 # =============================================================================
 # CASE MESSAGE FORM
@@ -23,7 +29,106 @@ class CaseMessageForm(forms.ModelForm):
 # GLOBAL DISEASE DATA
 # =============================================================================
 DISEASE_GLOBAL_DATA = {
-    "black_rot": {
+    "alternaria_leaf_spot": {
+        "prevention": [
+            "Seedling Stage: Use certified disease-free seeds",
+            "Avoid overhead watering",
+            "Vegetative Stage: Rotate crops annually",
+            "Remove and destroy infected leaves",
+            "Flowering Stage: Ensure proper spacing for airflow",
+            "Fruiting Stage: Apply protective mulch",
+        ],
+        "treatment": [
+            "Seedling Stage: Spray copper-based fungicide if spots appear",
+            "Vegetative Stage: Apply chlorothalonil or mancozeb fungicides",
+            "Flowering Stage: Repeat fungicide sprays at 7–10 day intervals",
+            "Fruiting Stage: Remove and destroy infected fruits",
+        ],
+        "best_practices": [
+            "Sanitize garden tools",
+            "Avoid working with wet plants",
+            "Practice strict crop rotation",
+        ],
+    },
+    "club_root": {
+        "prevention": [
+            "Seedling Stage: Use resistant varieties",
+            "Test soil pH and maintain above 7.2",
+            "Vegetative Stage: Apply lime to acidic soils",
+            "Avoid waterlogging",
+        ],
+        "treatment": [
+            "Currently no effective chemical treatment",
+            "Uproot and destroy infected plants",
+            "Improve soil drainage",
+        ],
+        "best_practices": [
+            "Rotate crops with non-crucifers",
+            "Keep field records of outbreaks",
+            "Ensure tools are sanitized",
+        ],
+    },
+    "downy_mildew": {  # already had data, kept same
+        "prevention": [
+            "Seedling Stage: Plant in sunny, ventilated areas",
+            "Avoid water on leaves",
+            "Vegetative Stage: Avoid dense planting",
+            "Do not irrigate at night",
+            "Flowering Stage: Keep humidity below 70%",
+            "Remove affected leaves",
+            "Fruiting Stage: Use drip irrigation",
+            "Harvest promptly",
+        ],
+        "treatment": [
+            "Seedling Stage: Spray neem oil if yellowing detected",
+            "Vegetative Stage: Apply fungicide weekly",
+            "Flowering Stage: Targeted fungicide early morning/evening",
+            "Fruiting Stage: Remove infected fruits",
+            "Apply protective fungicide",
+        ],
+        "best_practices": [
+            "Inspect plants twice a week",
+            "Ensure soil drains well",
+            "Maintain proper crop rotation",
+        ],
+    },
+    "cabbage_aphid_colony": {
+        "prevention": [
+            "Seedling Stage: Inspect seedlings for aphids before planting",
+            "Encourage natural predators (lady beetles, lacewings)",
+            "Vegetative Stage: Avoid over-fertilizing with nitrogen",
+            "Remove weeds around fields",
+        ],
+        "treatment": [
+            "Apply insecticidal soap or neem oil",
+            "Use systemic insecticides if infestation is severe",
+            "Spray early morning or evening to protect pollinators",
+        ],
+        "best_practices": [
+            "Scout fields weekly",
+            "Rotate crops",
+            "Maintain biodiversity to support natural predators",
+        ],
+    },
+    "ring_spot": {
+        "prevention": [
+            "Seedling Stage: Use certified seeds",
+            "Avoid planting in infected soil",
+            "Vegetative Stage: Remove infected leaves",
+            "Flowering Stage: Maintain good airflow",
+            "Fruiting Stage: Apply protective mulch",
+        ],
+        "treatment": [
+            "Apply fungicides such as chlorothalonil",
+            "Remove and destroy infected plant debris",
+        ],
+        "best_practices": [
+            "Sanitize tools regularly",
+            "Avoid overhead irrigation",
+            "Rotate with non-host crops",
+        ],
+    },
+    "black_rot": {  # already had data, kept same
         "prevention": [
             "Seedling Stage: Sterilize trays and pots",
             "Ensure seedlings are disease-free",
@@ -53,31 +158,7 @@ DISEASE_GLOBAL_DATA = {
             "Record outbreaks for future management",
         ],
     },
-    "downy_mildew": {
-        "prevention": [
-            "Seedling Stage: Plant in sunny, ventilated areas",
-            "Avoid water on leaves",
-            "Vegetative Stage: Avoid dense planting",
-            "Do not irrigate at night",
-            "Flowering Stage: Keep humidity below 70%",
-            "Remove affected leaves",
-            "Fruiting Stage: Use drip irrigation",
-            "Harvest promptly",
-        ],
-        "treatment": [
-            "Seedling Stage: Spray neem oil if yellowing detected",
-            "Vegetative Stage: Apply fungicide weekly",
-            "Flowering Stage: Targeted fungicide early morning/evening",
-            "Fruiting Stage: Remove infected fruits",
-            "Apply protective fungicide",
-        ],
-        "best_practices": [
-            "Inspect plants twice a week",
-            "Ensure soil drains well",
-            "Maintain proper crop rotation",
-        ],
-    },
-    "bacterial_spot_rot": {
+    "bacterial_spot_rot": {  # already had data, kept same
         "prevention": [
             "Seedling Stage: Use certified disease-free seeds",
             "Sanitize trays and tools",
@@ -100,7 +181,17 @@ DISEASE_GLOBAL_DATA = {
             "Maintain detailed records of outbreaks",
         ],
     },
+    "no_disease": {
+        "prevention": [],
+        "treatment": [],
+        "best_practices": [
+            "Maintain healthy soil",
+            "Water appropriately",
+            "Regular crop inspection",
+        ],
+    },
 }
+
 
 # =============================================================================
 # CASE MANAGEMENT VIEWS
@@ -175,24 +266,26 @@ def farmer_case_detail(request, case_id):
 # DISEASE DETECTION & CASE CREATION VIEWS
 # =============================================================================
 
+
+
+
 @login_required
 def detect_disease_view(request):
-    """Detect disease from uploaded plant image"""
+    """Detect disease from uploaded plant image using AI model"""
     result = None
     doctor_list = []
+
     if request.method == "POST" and request.FILES.get("plant_image"):
         image = request.FILES["plant_image"]
 
-        # Fake AI Logic (random disease choice)
-        DISEASES = {
-            "black_rot": "Black Rot",
-            "downy_mildew": "Downy Mildew",
-            "bacterial_spot_rot": "Bacterial Spot Rot",
-        }
-        disease_key = random.choice(list(DISEASES.keys()))
-        disease_name = DISEASES[disease_key]
+        # Run AI model
+        pred_class, confidence = predict_one_image(image)
 
-        # Fetch related suggestions
+        # Normalize for DB lookup & global data
+        disease_key = pred_class.lower().replace(" ", "_")
+        disease_name = pred_class.replace("_", " ")
+
+        # Fetch disease-specific suggestions
         suggestions_qs = GeneralSuggestion.objects.filter(
             disease_type=disease_key
         ).select_related("doctor")
@@ -200,14 +293,7 @@ def detect_disease_view(request):
         suggestions = []
         for s in suggestions_qs:
             doctor = s.doctor
-            doctor_name = f"{doctor.first_name} {doctor.last_name}".strip()
-            doctor_list.append({
-                "id": doctor.id,
-                "name": doctor_name,
-            })
-            if not doctor_name:
-                doctor_name = doctor.username
-
+            doctor_name = f"{doctor.first_name} {doctor.last_name}".strip() or doctor.username
             suggestions.append({
                 "title": s.title,
                 "treatment": s.treatment,
@@ -217,17 +303,27 @@ def detect_disease_view(request):
                 "suggested_by": doctor_name,
             })
 
-        # Build result object
+        # ✅ Fetch ALL doctors (independent of suggestions)
+        all_doctors_qs = CustomUser.objects.filter(role="doctor").order_by("first_name", "last_name")
+        doctor_list = [
+            {"id": d.id, "name": f"{d.first_name} {d.last_name}".strip() or d.username}
+            for d in all_doctors_qs
+        ]
+
+        # Final result package
         result = {
             "disease_name": disease_name,
+            "confidence": f"{confidence:.2f}",
             "analysis_date": timezone.now().strftime("%Y-%m-%d %H:%M"),
             "suggestions": suggestions,
             "disease_key": disease_key,
             "general_info": DISEASE_GLOBAL_DATA.get(disease_key, {})
         }
 
-    return render(request, "dashboard/farmer/image_upload.html", {"result": result, "doctor_list": doctor_list})
-
+    return render(request, "dashboard/farmer/image_upload.html", {
+        "result": result,
+        "doctor_list": doctor_list
+    })
 
 @login_required
 def open_case_view(request):

@@ -3,9 +3,14 @@ from django.conf import settings
 
 class GeneralSuggestion(models.Model):
     DISEASE_CHOICES = [
-        ("black_rot", "Black Rot"),
+        ("alternaria_leaf_spot", "Alternaria Leaf Spot"),
+        ("club_root", "Club Root"),
         ("downy_mildew", "Downy Mildew"),
-        ("bacterial_spot", "Bacterial Spot"),
+        ("cabbage_aphid_colony", "Cabbage Aphid Colony"),
+        ("ring_spot", "Ring Spot"),
+        ("black_rot", "Black Rot"),
+        ("bacterial_spot_rot", "Bacterial Spot Rot"),
+        ("no_disease", "No Disease"),
     ]
 
     PRIORITY_CHOICES = [

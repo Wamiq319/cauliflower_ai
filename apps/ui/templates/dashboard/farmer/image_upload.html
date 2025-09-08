@@ -73,7 +73,7 @@
                   id="imageInput"
                 />
 
-                <!-- Upload Interface (shown when no image) -->
+                <!-- Upload Interface -->
                 <div
                   id="uploadInterface"
                   class="w-full h-full flex flex-col items-center justify-center"
@@ -92,7 +92,7 @@
                   </label>
                 </div>
 
-                <!-- Image Preview (shown when image is selected) -->
+                <!-- Image Preview -->
                 <div
                   id="imagePreview"
                   class="hidden w-full h-full flex flex-col items-center justify-center"
@@ -148,7 +148,7 @@
             <span>📋</span> Consult a Doctor
           </h3>
           <p class="text-blue-700 mb-4 text-sm">
-            You can now consult with doctor..
+            You can now consult with a doctor.
           </p>
 
           <form
@@ -170,9 +170,9 @@
 
             <!-- Doctor Dropdown -->
             <div>
-              <label class="block text-sm font-medium text-blue-700 mb-2">
-                Select Doctor
-              </label>
+              <label class="block text-sm font-medium text-blue-700 mb-2"
+                >Select Doctor</label
+              >
               <select
                 name="doctor_id"
                 class="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -187,14 +187,14 @@
 
             <!-- Additional Notes -->
             <div>
-              <label class="block text-sm font-medium text-blue-700 mb-2">
-                Additional Notes
-              </label>
+              <label class="block text-sm font-medium text-blue-700 mb-2"
+                >Additional Notes</label
+              >
               <textarea
                 name="case_notes"
                 rows="3"
                 class="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 resize-none"
-                placeholder="Describe your specific concerns, symptoms you've noticed, or any additional info..."
+                placeholder="Describe your concerns, symptoms, or any additional info..."
                 required
               ></textarea>
             </div>
@@ -236,7 +236,6 @@
       <!-- Disease Info -->
       <div
         class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 mb-6 border border-green-200"
-        data-result="true"
       >
         <h4
           class="text-lg font-bold text-green-800 mb-4 flex items-center gap-2"
@@ -244,7 +243,6 @@
           <span>🔬</span> Analysis Summary
         </h4>
 
-        <!-- Image and Analysis Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <!-- Uploaded Image -->
           <div class="md:col-span-1">
@@ -310,170 +308,79 @@
         </div>
       </div>
 
-      {% if result.suggestions %}
-      <div class="space-y-4">
-        {% if result.general_info %}
-        <div class="bg-green-50 rounded-lg p-6 border border-green-200 mt-6">
-          <!-- Main Heading -->
-          <h3
-            class="text-xl font-bold text-green-900 mb-6 flex items-center gap-2"
+      <!-- Always show general info if available -->
+      {% if result.general_info %}
+      <div class="bg-green-50 rounded-lg p-6 border border-green-200 mt-6">
+        <h3
+          class="text-xl font-bold text-green-900 mb-6 flex items-center gap-2"
+        >
+          <span>🌿</span> General Disease Guidance
+        </h3>
+
+        {% if result.general_info.prevention %}
+        <div class="mb-4">
+          <h4
+            class="font-semibold text-yellow-700 mb-2 flex items-center gap-2"
           >
-            <span>🌿</span> General Disease Guidance
-          </h3>
-
-          <!-- Prevention Section -->
-          {% if result.general_info.prevention %}
-          <div class="mb-4">
-            <h4
-              class="font-semibold text-yellow-700 mb-2 flex items-center gap-2"
-            >
-              <span>🛡️</span> Prevention Measures
-            </h4>
-            <ul class="list-disc list-inside text-sm text-yellow-800">
-              {% for item in result.general_info.prevention %}
-              <li>{{ item }}</li>
-              {% endfor %}
-            </ul>
-          </div>
-          {% endif %}
-
-          <!-- Treatment Section -->
-          {% if result.general_info.treatment %}
-          <div class="mb-4">
-            <h4
-              class="font-semibold text-blue-700 mb-2 flex items-center gap-2"
-            >
-              <span>💊</span> Treatment Plan
-            </h4>
-            <ul class="list-disc list-inside text-sm text-blue-800">
-              {% for item in result.general_info.treatment %}
-              <li>{{ item }}</li>
-              {% endfor %}
-            </ul>
-          </div>
-          {% endif %}
-
-          <!-- Best Practices Section -->
-          {% if result.general_info.best_practices %}
-          <div>
-            <h4
-              class="font-semibold text-purple-700 mb-2 flex items-center gap-2"
-            >
-              <span>✅</span> Best Practices
-            </h4>
-            <ul class="list-disc list-inside text-sm text-purple-800">
-              {% for item in result.general_info.best_practices %}
-              <li>{{ item }}</li>
-              {% endfor %}
-            </ul>
-          </div>
-          {% endif %}
+            <span>🛡️</span> Prevention Measures
+          </h4>
+          <ul class="list-disc list-inside text-sm text-yellow-800">
+            {% for item in result.general_info.prevention %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %} {% if result.general_info.treatment %}
+        <div class="mb-4">
+          <h4 class="font-semibold text-blue-700 mb-2 flex items-center gap-2">
+            <span>💊</span> Treatment Plan
+          </h4>
+          <ul class="list-disc list-inside text-sm text-blue-800">
+            {% for item in result.general_info.treatment %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %} {% if result.general_info.best_practices %}
+        <div>
+          <h4
+            class="font-semibold text-purple-700 mb-2 flex items-center gap-2"
+          >
+            <span>✅</span> Best Practices
+          </h4>
+          <ul class="list-disc list-inside text-sm text-purple-800">
+            {% for item in result.general_info.best_practices %}
+            <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
         </div>
         {% endif %}
-
-        <h4
-          class="text-lg font-bold text-green-800 mb-4 flex items-center gap-2"
-        >
-          <span>🎯</span> Expert Recommendations
-        </h4>
-        {% for suggestion in result.suggestions %}
-        <div
-          class="bg-white border border-green-200 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
-        >
-          <!-- Header Section -->
-          <div class="border-b border-green-200 pb-4 mb-4">
-            <div class="flex items-start justify-between mb-2">
-              <h5
-                class="text-lg font-bold text-green-800 flex items-center gap-2"
-              >
-                <span>💡</span> {{ suggestion.title }}
-              </h5>
-              <span
-                class="px-3 py-1 rounded-full text-xs font-bold {% if suggestion.priority == 'high' %}bg-red-100 text-red-800 border border-red-200 {% elif suggestion.priority == 'medium' %}bg-yellow-100 text-yellow-800 border border-yellow-200 {% else %}bg-green-100 text-green-800 border border-green-200{% endif %}"
-              >
-                {{ suggestion.priority|title }} Priority
-              </span>
-            </div>
-            <div class="flex items-center gap-2 text-sm text-green-600">
-              <span>👨‍⚕️</span>
-              <span class="font-medium">Dr. {{ suggestion.suggested_by }}</span>
-            </div>
-          </div>
-
-          <!-- Content Grid -->
-          <div class="grid gap-4">
-            <!-- Treatment Section -->
-            <div
-              class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200"
-            >
-              <h6
-                class="text-sm font-bold text-blue-800 mb-2 flex items-center gap-2"
-              >
-                <span>💊</span> Treatment Plan
-              </h6>
-              <p class="text-blue-700 text-sm leading-relaxed">
-                {{ suggestion.treatment }}
-              </p>
-            </div>
-
-            <!-- Prevention Section -->
-            <div
-              class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 border border-green-200"
-            >
-              <h6
-                class="text-sm font-bold text-green-800 mb-2 flex items-center gap-2"
-              >
-                <span>🛡️</span> Prevention Measures
-              </h6>
-              <p class="text-green-700 text-sm leading-relaxed">
-                {{ suggestion.prevention }}
-              </p>
-            </div>
-
-            {% if suggestion.best_practices %}
-            <!-- Best Practices Section -->
-            <div
-              class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200"
-            >
-              <h6
-                class="text-sm font-bold text-purple-800 mb-2 flex items-center gap-2"
-              >
-                <span>✅</span> Best Practices
-              </h6>
-              <p class="text-purple-700 text-sm leading-relaxed">
-                {{ suggestion.best_practices }}
-              </p>
-            </div>
-            {% endif %}
-          </div>
-        </div>
-        {% endfor %}
       </div>
-      {% else %}
+      {% endif %}
+
+      <!-- Expert suggestions -->
+      {% if result.suggestions %}
+      <h4 class="text-lg font-bold text-green-800 mb-4 flex items-center gap-2">
+        <span>🎯</span> Expert Recommendations
+      </h4>
+      {% for suggestion in result.suggestions %}
+      <!-- your suggestion card here -->
+      {% endfor %} {% else %}
       <div
         class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center"
       >
         <span class="text-4xl block mb-3">🔍</span>
         <h4 class="text-lg font-bold text-yellow-800 mb-2">
-          No Recommendations Available
+          No Expert Recommendations
         </h4>
         <p class="text-yellow-700 text-sm">
-          No expert recommendations found for this disease. Consider opening a
-          case for personalized advice.
+          General guidance is shown above. For personalized advice, open a case
+          with a doctor.
         </p>
-      </div>
-      {% endif %} {% else %}
-      <div class="h-full flex items-center justify-center">
-        <div class="text-center text-green-600">
-          <span class="text-4xl block mb-3">🔬</span>
-          <p class="text-base font-medium">Upload an image to start analysis</p>
-          <p class="text-sm">Results will appear here after analysis</p>
-        </div>
       </div>
       {% endif %}
 
       <!-- Analyze New Image Button -->
-      {% if result %}
       <div class="mt-6 text-center">
         <a
           href="{% url 'farmer_detect_disease' %}"
@@ -481,6 +388,15 @@
         >
           <span>🔄</span> Analyze New Image
         </a>
+      </div>
+      {% else %}
+      <!-- Empty state when no result -->
+      <div class="h-full flex items-center justify-center">
+        <div class="text-center text-green-600">
+          <span class="text-4xl block mb-3">🔬</span>
+          <p class="text-base font-medium">Upload an image to start analysis</p>
+          <p class="text-sm">Results will appear here after analysis</p>
+        </div>
       </div>
       {% endif %}
     </div>
@@ -503,35 +419,17 @@
           const uploadInterface = document.getElementById("uploadInterface");
           const imageData = document.getElementById("imageData");
 
-          // Update both preview images
-          if (previewImg) {
-            previewImg.src = e.target.result;
-          }
-          if (analysisPreviewImg) {
-            analysisPreviewImg.src = e.target.result;
-          }
+          if (previewImg) previewImg.src = e.target.result;
+          if (analysisPreviewImg) analysisPreviewImg.src = e.target.result;
 
-          // Store image data
-          if (imageData) {
-            imageData.value = e.target.result;
-          }
-          if (fileName) {
-            fileName.textContent = file.name;
-          }
+          if (imageData) imageData.value = e.target.result;
+          if (fileName) fileName.textContent = file.name;
 
-          // Save image data to localStorage for persistence
           localStorage.setItem("uploadedImageData", e.target.result);
           localStorage.setItem("uploadedFileName", file.name);
 
-          // Show image preview and hide upload interface
-          if (imagePreview) {
-            imagePreview.classList.remove("hidden");
-          }
-          if (uploadInterface) {
-            uploadInterface.classList.add("hidden");
-          }
-
-          console.log("Image uploaded successfully:", file.name);
+          if (imagePreview) imagePreview.classList.remove("hidden");
+          if (uploadInterface) uploadInterface.classList.add("hidden");
         };
         reader.readAsDataURL(file);
       }
@@ -548,51 +446,32 @@
     imageInput.value = "";
     imageData.value = "";
 
-    // Clear localStorage
     localStorage.removeItem("uploadedImageData");
     localStorage.removeItem("uploadedFileName");
 
-    // Hide image preview and show upload interface
     imagePreview.classList.add("hidden");
     uploadInterface.classList.remove("hidden");
 
-    // Clear both preview images
-    if (previewImg) {
-      previewImg.src = "";
-    }
-    if (analysisPreviewImg) {
-      analysisPreviewImg.src = "";
-    }
+    if (previewImg) previewImg.src = "";
+    if (analysisPreviewImg) analysisPreviewImg.src = "";
   }
 
-  // Keep image visible after form submission if there's a result
   document.addEventListener("DOMContentLoaded", function () {
     const imageData = document.getElementById("imageData");
     const analysisPreviewImg = document.getElementById("analysisPreviewImg");
 
-    // Restore image if we have stored data
     if (imageData && imageData.value) {
       const previewImg = document.getElementById("previewImg");
       const imagePreview = document.getElementById("imagePreview");
       const uploadInterface = document.getElementById("uploadInterface");
 
-      if (previewImg) {
-        previewImg.src = imageData.value;
-      }
-      if (analysisPreviewImg) {
-        analysisPreviewImg.src = imageData.value;
-      }
+      if (previewImg) previewImg.src = imageData.value;
+      if (analysisPreviewImg) analysisPreviewImg.src = imageData.value;
 
-      // Show image preview and hide upload interface
-      if (imagePreview) {
-        imagePreview.classList.remove("hidden");
-      }
-      if (uploadInterface) {
-        uploadInterface.classList.add("hidden");
-      }
+      if (imagePreview) imagePreview.classList.remove("hidden");
+      if (uploadInterface) uploadInterface.classList.add("hidden");
     }
 
-    // Always try to restore image from localStorage for analysis results
     if (analysisPreviewImg) {
       const savedImageData = localStorage.getItem("uploadedImageData");
       if (savedImageData) {
