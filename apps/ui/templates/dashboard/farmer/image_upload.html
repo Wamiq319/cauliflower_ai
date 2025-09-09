@@ -154,6 +154,7 @@
           <form
             method="POST"
             action="{% url 'farmer_open_case' %}"
+            enctype="multipart/form-data"
             class="space-y-4"
           >
             {% csrf_token %}
@@ -166,6 +167,14 @@
               type="hidden"
               name="disease_key"
               value="{{ result.disease_key|default:'' }}"
+            />
+
+            <!-- Hidden Image Data -->
+            <input
+              type="hidden"
+              id="caseImageData"
+              name="image_data"
+              value=""
             />
 
             <!-- Doctor Dropdown -->
@@ -459,6 +468,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     const imageData = document.getElementById("imageData");
     const analysisPreviewImg = document.getElementById("analysisPreviewImg");
+    const caseImageData = document.getElementById("caseImageData");
 
     if (imageData && imageData.value) {
       const previewImg = document.getElementById("previewImg");
@@ -476,7 +486,22 @@
       const savedImageData = localStorage.getItem("uploadedImageData");
       if (savedImageData) {
         analysisPreviewImg.src = savedImageData;
+        // Copy image data to case form
+        if (caseImageData) {
+          caseImageData.value = savedImageData;
+        }
       }
+    }
+
+    // Handle form submission - ensure image data is copied
+    const caseForm = document.querySelector('form[action*="open_case"]');
+    if (caseForm) {
+      caseForm.addEventListener("submit", function () {
+        const savedImageData = localStorage.getItem("uploadedImageData");
+        if (savedImageData && caseImageData) {
+          caseImageData.value = savedImageData;
+        }
+      });
     }
   });
 </script>

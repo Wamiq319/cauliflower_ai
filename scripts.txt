@@ -14,14 +14,13 @@ Activate the virtual environment:
 
 ## Install Dependencies
 > pip install -r requirements.txt
-pip freeze > requirements.txt
 
 ## Run Django Server
 > python manage.py runserver
 
 ## Migrations
 Run migrations to set up the database:
-python manage.py makemigrations accounts admin_panel doctors 
+python manage.py makemigrations accounts admin_panel doctors farmers
 > python manage.py migrate
 
 
@@ -38,12 +37,12 @@ Email: wamiq@email.com
 Password: adminpass
 
 ### Farmer
-Username: greenfields_john  
-Password: SecureFarm2025!  
+Username: ali_h  
+Password: farmer123  
 
 ### Doctor
-Username: dr_smwangi  
-Password: CauliExpert@2025  
+Username: ahmed_r
+Password: doctor123  
 
 ### Admin
 Username: admin01  
@@ -65,4 +64,4 @@ admin_user = CustomUser.objects.create(
 admin_user.set_password('adminpass01')
 admin_user.save()
 
-print(f"Admin user created: {admin_user.username} with role {admin_user.role}")
+print(f"Admin user created: {admin_user.username} with role {admin_user.role} and password {admin_user.password}")

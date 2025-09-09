@@ -65,6 +65,7 @@
   </div>
 
   <!-- Chat Section -->
+  {% if user.doctor_profile.is_approved %}
   <div class="mb-8">
     <h3
       class="text-lg font-semibold text-blue-800 mb-4 flex items-center gap-2"
@@ -109,6 +110,30 @@
       </button>
     </form>
   </div>
+  {% else %}
+  <!-- Disabled Chat State -->
+  <div class="mb-8">
+    <div class="bg-gray-50 rounded-lg p-6 text-center">
+      <div class="text-4xl mb-3">🔒</div>
+      <h3 class="text-lg font-semibold text-gray-600 mb-2">
+        Chat Access Restricted
+      </h3>
+      <p class="text-gray-500 mb-4">
+        You need admin approval to chat with farmers and access case management
+        features.
+      </p>
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+        <p class="text-yellow-800 text-sm">
+          <strong>Status:</strong> Pending Admin Approval
+        </p>
+        <p class="text-yellow-700 text-xs mt-1">
+          Please contact the administrator or wait for your account to be
+          reviewed.
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
 
   <!-- Back Button -->
   <div class="mt-8 text-center">

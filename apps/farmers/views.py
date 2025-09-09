@@ -310,6 +310,7 @@ def detect_disease_view(request):
             for d in all_doctors_qs
         ]
 
+
         # Final result package
         result = {
             "disease_name": disease_name,
@@ -317,7 +318,8 @@ def detect_disease_view(request):
             "analysis_date": timezone.now().strftime("%Y-%m-%d %H:%M"),
             "suggestions": suggestions,
             "disease_key": disease_key,
-            "general_info": DISEASE_GLOBAL_DATA.get(disease_key, {})
+            "general_info": DISEASE_GLOBAL_DATA.get(disease_key, {}),
+            "image_name": image.name
         }
 
     return render(request, "dashboard/farmer/image_upload.html", {
@@ -330,21 +332,47 @@ def open_case_view(request):
     """Open a new case based on analysis results and assign a doctor"""
     if request.method == "POST":
         disease_name = request.POST.get("disease_name")
-        crop_name = request.POST.get("crop_name")
         case_notes = request.POST.get("case_notes")
         doctor_id = request.POST.get("doctor_id")  # Selected doctor
+        image_data = request.POST.get("image_data")  # Get base64 image data
 
         # Validate required fields
         if not disease_name or not doctor_id:
             messages.error(request, 'Please select a doctor and fill all required fields.')
             return redirect('farmer_detect_disease')
         
-        # Create analysis record
+        # Convert base64 image data to file
+        image_file = None
+        if image_data:
+            import base64
+            import uuid
+            from django.core.files.base import ContentFile
+            
+            # Remove data URL prefix if present
+            if ',' in image_data:
+                format, imgstr = image_data.split(',')
+                ext = format.split('/')[-1].split(';')[0]
+            else:
+                imgstr = image_data
+                ext = 'jpg'  # default extension
+            
+            # Decode base64 data
+            image_data_decoded = base64.b64decode(imgstr)
+            
+            # Create unique filename
+            unique_filename = f"case_{request.user.id}_{timezone.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.{ext}"
+            
+            # Create Django file object
+            image_file = ContentFile(image_data_decoded, name=unique_filename)
+        
+        # Create analysis record with image
         analysis = Analysis.objects.create(
             farmer=request.user,
-            crop_name="Cauliflowerb",
+            crop_name="Cauliflower",  # Always set to Cauliflower
             disease_name=disease_name,
+            image=image_file  # Save the converted image file
         )
+        
         # Fetch selected doctor if provided
         assigned_doctor = None
         if doctor_id:
@@ -357,8 +385,8 @@ def open_case_view(request):
         case = Case.objects.create(
             farmer=request.user,
             analysis=analysis,
-            title=f"Case for {crop_name} - {disease_name}",
-            description=case_notes or f"Need help with {disease_name} on {crop_name}",
+            title=f"Case for Cauliflower - {disease_name}",
+            description=case_notes or f"Need help with {disease_name} on Cauliflower",
             priority='medium',  # FIXED
             status='open',
             assigned_doctor=assigned_doctor  # Make sure Case model has this field
@@ -366,7 +394,7 @@ def open_case_view(request):
 
         messages.success(
             request,
-            f"Case #{case.id} opened successfully! Dr. {assigned_doctor.first_name} will review your {crop_name} case with {disease_name}."
+            f"Case #{case.id} opened successfully! Dr. {assigned_doctor.first_name} will review your Cauliflower case with {disease_name}."
         )
         return redirect('farmer_case_detail', case_id=case.id)
     

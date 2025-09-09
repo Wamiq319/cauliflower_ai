@@ -3,7 +3,13 @@ from django.conf import settings
 from django.utils import timezone
 
 def case_image_path(instance, filename):
-    return f'cases/{instance.farmer.id}/{timezone.now().strftime("%Y%m%d")}/{filename}'
+    """Generate unique image path for case images"""
+    import uuid
+    # Get file extension
+    ext = filename.split('.')[-1]
+    # Create unique filename with case info and timestamp
+    unique_filename = f"case_{instance.farmer.id}_{timezone.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.{ext}"
+    return f'cases/{instance.farmer.id}/{timezone.now().strftime("%Y%m%d")}/{unique_filename}'
 
 class Analysis(models.Model):
     """Plant disease analysis results"""
