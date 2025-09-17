@@ -2,9 +2,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Count, Q
 
-
-from apps.admin_panel.models import Event,Notification
+from apps.admin_panel.models import Event, Notification
+from apps.farmers.models import Analysis, Case
 from django.utils import timezone
 
 
@@ -16,28 +17,45 @@ from django.utils import timezone
 
 @login_required
 def farmer_dashboard(request):
-    """Farmer dashboard with stats and recent detections."""
+    """Farmer dashboard with basic stats."""
     user = request.user
 
-    stats = {"uploads": 12, "diseases": 5, "remedies": 4}
-    recent_detections = [
-        {"crop_name": "Cauliflower", "disease_name": "Black Rot", "date": "2025-07-24"},
-        {"crop_name": "Cauliflower", "disease_name": "Downy Mildew", "date": "2025-07-22"},
-    ]
+    # Get basic statistics from database
+    total_analyses = Analysis.objects.filter(farmer=user).count()
+    open_cases = Case.objects.filter(farmer=user, status='open').count()
+    total_cases = Case.objects.filter(farmer=user).count()
+    
+    # Get event and notification stats
+    total_events = Event.objects.count()
+    upcoming_events = Event.objects.filter(date__gte=timezone.now().date()).count()
+    total_notifications = Notification.objects.filter(recipient=user).count()
+    unread_notifications = Notification.objects.filter(recipient=user, is_read=False).count()
+    
+    stats = {
+        "uploads": total_analyses,
+        "open_cases": open_cases,
+        "total_cases": total_cases,
+        "total_events": total_events,
+        "upcoming_events": upcoming_events,
+        "total_notifications": total_notifications,
+        "unread_notifications": unread_notifications
+    }
 
-    # Get nearest upcoming events
-    today = timezone.now().date()
-    next_event = Event.objects.filter(date__gte=today).order_by('date').first()
-    if next_event:
-        upcoming_events = Event.objects.filter(date=next_event.date).order_by('created_at')
-    else:
-        upcoming_events = []
+    # Get recent analyses (last 3)
+    recent_analyses = Analysis.objects.filter(farmer=user).order_by('-analysis_date')[:3]
+    recent_detections = []
+    
+    for analysis in recent_analyses:
+        recent_detections.append({
+            "crop_name": analysis.crop_name,
+            "disease_name": analysis.disease_name,
+            "date": analysis.analysis_date.strftime('%Y-%m-%d')
+        })
 
     return render(request, 'dashboard/farmer/dashboard.html', {
         "user": user,
         "stats": stats,
-        "recent_detections": recent_detections,
-        "upcoming_events": upcoming_events
+        "recent_detections": recent_detections
     })
 
 

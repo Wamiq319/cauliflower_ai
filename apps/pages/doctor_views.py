@@ -3,7 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from apps.doctors.models import GeneralSuggestion
-from apps.admin_panel.models import Event,Notification
+from apps.admin_panel.models import Event, Notification
+from apps.farmers.models import Case
 
 from django.utils import timezone
 
@@ -17,9 +18,18 @@ def doctor_dashboard(request):
     user = request.user
     is_approved = getattr(user.doctor_profile, 'is_approved', False) if hasattr(user, 'doctor_profile') else False
     
+    # Get real statistics from database
     total_suggestions = GeneralSuggestion.objects.filter(doctor=user).count()
-    active_suggestions = total_suggestions
-    total_cases_reviewed = 15
+    active_suggestions = total_suggestions  # All suggestions are considered active
+    
+    # Get case statistics
+    assigned_cases = Case.objects.filter(assigned_doctor=user).count()
+    
+    # Get event and notification stats
+    total_events = Event.objects.count()
+    upcoming_events_count = Event.objects.filter(date__gte=timezone.now().date()).count()
+    total_notifications = Notification.objects.filter(recipient=user).count()
+    unread_notifications = Notification.objects.filter(recipient=user, is_read=False).count()
 
     # Upcoming events for the nearest date
     today = timezone.now().date()
@@ -34,7 +44,11 @@ def doctor_dashboard(request):
         "stats": {
             "total_suggestions": total_suggestions,
             "active_suggestions": active_suggestions,
-            "total_cases_reviewed": total_cases_reviewed,
+            "assigned_cases": assigned_cases,
+            "total_events": total_events,
+            "upcoming_events": upcoming_events_count,
+            "total_notifications": total_notifications,
+            "unread_notifications": unread_notifications,
         },
         "is_approved": is_approved,
         "upcoming_events": upcoming_events,

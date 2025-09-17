@@ -11,7 +11,7 @@
   </p>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
   <div class="bg-green-50 rounded-2xl shadow p-6 flex flex-col items-center">
     <span class="text-4xl mb-2">📷</span>
     <div class="text-lg font-bold text-green-800">Images Analyzed</div>
@@ -20,17 +20,38 @@
     </div>
   </div>
   <div class="bg-green-50 rounded-2xl shadow p-6 flex flex-col items-center">
-    <span class="text-4xl mb-2">🦠</span>
-    <div class="text-lg font-bold text-green-800">Diseases Detected</div>
+    <span class="text-4xl mb-2">📝</span>
+    <div class="text-lg font-bold text-green-800">Open Cases</div>
     <div class="text-2xl text-green-900 mt-1 font-mono">
-      {{ stats.diseases }}
+      {{ stats.open_cases }}
     </div>
   </div>
   <div class="bg-green-50 rounded-2xl shadow p-6 flex flex-col items-center">
-    <span class="text-4xl mb-2">💊</span>
-    <div class="text-lg font-bold text-green-800">Remedies Suggested</div>
+    <span class="text-4xl mb-2">📋</span>
+    <div class="text-lg font-bold text-green-800">Total Cases</div>
     <div class="text-2xl text-green-900 mt-1 font-mono">
-      {{ stats.remedies }}
+      {{ stats.total_cases }}
+    </div>
+  </div>
+  <div class="bg-green-50 rounded-2xl shadow p-6 flex flex-col items-center">
+    <span class="text-4xl mb-2">📅</span>
+    <div class="text-lg font-bold text-green-800">Upcoming Events</div>
+    <div class="text-2xl text-green-900 mt-1 font-mono">
+      {{ stats.upcoming_events }}
+    </div>
+  </div>
+  <div class="bg-green-50 rounded-2xl shadow p-6 flex flex-col items-center">
+    <span class="text-4xl mb-2">🔔</span>
+    <div class="text-lg font-bold text-green-800">Notifications</div>
+    <div class="text-2xl text-green-900 mt-1 font-mono">
+      {{ stats.total_notifications }}
+    </div>
+  </div>
+  <div class="bg-green-50 rounded-2xl shadow p-6 flex flex-col items-center">
+    <span class="text-4xl mb-2">🔴</span>
+    <div class="text-lg font-bold text-green-800">Unread</div>
+    <div class="text-2xl text-green-900 mt-1 font-mono">
+      {{ stats.unread_notifications }}
     </div>
   </div>
 </div>
@@ -42,18 +63,11 @@
   </h2>
   <div class="space-y-3">
     {% for detection in recent_detections %}
-    <div
-      class="border border-green-200 rounded-lg p-4 bg-green-50 flex justify-between items-center hover:shadow-md transition"
-    >
-      <div>
-        <div class="font-semibold text-green-800">
-          {{ detection.crop_name }}
-        </div>
-        <div class="text-sm text-green-600">
-          {{ detection.disease_name }} — {{ detection.date }}
-        </div>
+    <div class="border border-green-200 rounded-lg p-4 bg-green-50">
+      <div class="font-semibold text-green-800">{{ detection.crop_name }}</div>
+      <div class="text-sm text-green-600">
+        {{ detection.disease_name }} — {{ detection.date }}
       </div>
-      <span class="text-green-700 text-sm font-medium">Analyzed</span>
     </div>
     {% empty %}
     <p class="text-green-700">No recent analyses found.</p>
