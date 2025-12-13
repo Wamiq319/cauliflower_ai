@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 from apps.accounts.models import CustomUser
 from apps.admin_panel.models import Event, Notification
 
@@ -122,9 +124,14 @@ def admin_profile(request):
 def display_admin_notifications(request):
     """Display notifications for all users (admin view)."""
     notifications = Notification.objects.select_related("recipient").order_by("-created_at")
-
+    recipients = (
+        CustomUser.objects
+        .exclude(role="admin")
+        .annotate(full_name=Concat(F("first_name"), Value(" "), F("last_name")))
+    )
     return render(request, "dashboard/admin/manage_notifications.html", {
         "user": request.user,
         "notifications": notifications,
+        "recipients": recipients,
     })
 

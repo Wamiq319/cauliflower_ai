@@ -178,13 +178,13 @@ def add_notification(request):
 
         if not all([recipient_id, title, message_text]):
             messages.error(request, "All fields are required.")
-            return redirect("admin_add_notification")
+            return redirect("admin_manage_notifications")
 
         try:
             recipient = CustomUser.objects.get(id=recipient_id)
         except CustomUser.DoesNotExist:
             messages.error(request, "Selected user does not exist.")
-            return redirect("admin_add_notification")
+            return redirect("admin_manage_notifications")
 
         Notification.objects.create(
             recipient=recipient,
@@ -195,7 +195,7 @@ def add_notification(request):
             request,
             f'Notification "{title}" sent to {recipient.get_full_name() or recipient.username}.'
         )
-        return redirect("admin_add_notification")
+        return redirect("admin_manage_notifications")
 
     return render(
         request,
