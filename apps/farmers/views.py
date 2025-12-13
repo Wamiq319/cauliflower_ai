@@ -181,6 +181,11 @@ DISEASE_GLOBAL_DATA = {
             "Maintain detailed records of outbreaks",
         ],
     },
+    "unknown": {
+        "prevention": ["Ensure the image is clear and shows a cauliflower plant."],
+        "treatment": ["Please try again with a better image of a cauliflower plant."],
+        "best_practices": ["Take photos in good lighting.", "Focus on the affected area of the plant."],
+    },
     "no_disease": {
         "prevention": [],
         "treatment": [],
@@ -283,42 +288,62 @@ def detect_disease_view(request):
 
         # Normalize for DB lookup & global data
         disease_key = pred_class.lower().replace(" ", "_")
-        disease_name = pred_class.replace("_", " ")
-
-        # Fetch disease-specific suggestions
-        suggestions_qs = GeneralSuggestion.objects.filter(
-            disease_type=disease_key
-        ).select_related("doctor")
+        disease_name = pred_class.replace("_", " ").title()
 
         suggestions = []
-        for s in suggestions_qs:
-            doctor = s.doctor
-            doctor_name = f"{doctor.first_name} {doctor.last_name}".strip() or doctor.username
-            suggestions.append({
-                "title": s.title,
-                "treatment": s.treatment,
-                "prevention": s.prevention,
-                "best_practices": s.best_practices,
-                "priority": s.priority,
-                "suggested_by": doctor_name,
-            })
+        # If disease is not "Unknown", fetch suggestions and doctors
+        if pred_class != "Unknown":
+            # Fetch disease-specific suggestions
+            suggestions_qs = GeneralSuggestion.objects.filter(
+                disease_type=disease_key
+            ).select_related("doctor")
 
-        # ✅ Fetch ALL doctors (independent of suggestions)
-        all_doctors_qs = CustomUser.objects.filter(role="doctor").order_by("first_name", "last_name")
-        doctor_list = [
-            {"id": d.id, "name": f"{d.first_name} {d.last_name}".strip() or d.username}
-            for d in all_doctors_qs
-        ]
+            for s in suggestions_qs:
+                doctor = s.doctor
+                doctor_name = f"{doctor.first_name} {doctor.last_name}".strip() or doctor.username
+                suggestions.append({
+                    "title": s.title,
+                    "treatment": s.treatment,
+                    "prevention": s.prevention,
+                    "best_practices": s.best_practices,
+                    "priority": s.priority,
+                    "suggested_by": doctor_name,
+                })
+
+            # ✅ Fetch ALL doctors (independent of suggestions)
+            all_doctors_qs = CustomUser.objects.filter(role="doctor").order_by("first_name", "last_name")
+            doctor_list = [
+                {"id": d.id, "name": f"{d.first_name} {d.last_name}".strip() or d.username}
+                for d in all_doctors_qs
+            ]
 
 
         # Final result package
+        # Final result package
+        global_data = DISEASE_GLOBAL_DATA.get(disease_key, {})
+        
+        # Log Expert Suggestions
+        print(f"\n[View] Found {len(suggestions)} expert suggestions for '{disease_name}':")
+        for i, s in enumerate(suggestions, 1):
+            print(f"  {i}. '{s['title']}' by Dr. {s['suggested_by']} (Priority: {s['priority']})")
+            
+        # Log Global Data
+        if global_data:
+            print(f"[View] Global data found for '{disease_key}': {list(global_data.keys())}")
+            if 'prevention' in global_data:
+                print(f"  - Prevention items: {len(global_data['prevention'])}")
+            if 'treatment' in global_data:
+                print(f"  - Treatment items: {len(global_data['treatment'])}")
+        else:
+            print(f"[View] No global data found for '{disease_key}'")
+
         result = {
             "disease_name": disease_name,
             "confidence": f"{confidence:.2f}",
             "analysis_date": timezone.now().strftime("%Y-%m-%d %H:%M"),
             "suggestions": suggestions,
             "disease_key": disease_key,
-            "general_info": DISEASE_GLOBAL_DATA.get(disease_key, {}),
+            "general_info": global_data,
             "image_name": image.name
         }
 

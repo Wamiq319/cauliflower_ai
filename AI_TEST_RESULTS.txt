@@ -1,0 +1,231 @@
+Testing images in: /home/wamidev/cauliflower_ai/apps/Ai_Test/Test_Images
+Image: alternaria leaf spot 1 correct.webp, Predicted Class: Alternaria_Leaf_Spot, Confidence: 0.9991
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.9991
+  - club root: 0.0000
+  - Downy Mildew: 0.0008
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 0.0001
+  - Black Rot: 0.0000
+  - Bacterial spot rot: 0.0000
+  - No disease: 0.0000
+Image: alternaria leaf spot 2 correct.webp, Predicted Class: Alternaria_Leaf_Spot, Confidence: 0.9991
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.9991
+  - club root: 0.0003
+  - Downy Mildew: 0.0004
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 0.0002
+  - Black Rot: 0.0000
+  - Bacterial spot rot: 0.0000
+  - No disease: 0.0000
+Image: alternaria leaf spot 3 correct.jpeg, Predicted Class: Alternaria_Leaf_Spot, Confidence: 0.6216
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.6216
+  - club root: 0.0000
+  - Downy Mildew: 0.0592
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 0.3185
+  - Black Rot: 0.0007
+  - Bacterial spot rot: 0.0000
+  - No disease: 0.0001
+Image: bacterial spot rot 1 correct.webp, Predicted Class: Bacterial spot rot, Confidence: 0.9999
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0000
+  - Downy Mildew: 0.0000
+  - Cabbage aphid colony: 0.0001
+  - Ring spot: 0.0000
+  - Black Rot: 0.0000
+  - Bacterial spot rot: 0.9999
+  - No disease: 0.0000
+Image: bacterial spot rot 3 correct.jpg, Predicted Class: Bacterial spot rot, Confidence: 0.9942
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0003
+  - Downy Mildew: 0.0053
+  - Cabbage aphid colony: 0.0001
+  - Ring spot: 0.0000
+  - Black Rot: 0.0001
+  - Bacterial spot rot: 0.9942
+  - No disease: 0.0000
+Image: black  rot 1 wrong.jpg, Predicted Class: Bacterial spot rot, Confidence: 1.0000
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0000
+  - Downy Mildew: 0.0000
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 0.0000
+  - Black Rot: 0.0000
+  - Bacterial spot rot: 1.0000
+  - No disease: 0.0000
+Image: black rot 11 wrong.jpg, Predicted Class: Bacterial spot rot, Confidence: 0.8657
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0028
+  - club root: 0.0412
+  - Downy Mildew: 0.0692
+  - Cabbage aphid colony: 0.0026
+  - Ring spot: 0.0002
+  - Black Rot: 0.0134
+  - Bacterial spot rot: 0.8657
+  - No disease: 0.0049
+Image: black rot 2 correct.webp, Predicted Class: Black Rot, Confidence: 0.8087
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0002
+  - club root: 0.0001
+  - Downy Mildew: 0.1836
+  - Cabbage aphid colony: 0.0007
+  - Ring spot: 0.0027
+  - Black Rot: 0.8087
+  - Bacterial spot rot: 0.0011
+  - No disease: 0.0029
+Image: black rot 22 correct.jpg, Predicted Class: Black Rot, Confidence: 0.8534
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0000
+  - Downy Mildew: 0.1437
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 0.0000
+  - Black Rot: 0.8534
+  - Bacterial spot rot: 0.0025
+  - No disease: 0.0003
+Image: cabbage aphid colony 2 wrong.webp, Predicted Class: Black Rot, Confidence: 0.6188
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0092
+  - club root: 0.0901
+  - Downy Mildew: 0.0030
+  - Cabbage aphid colony: 0.2480
+  - Ring spot: 0.0009
+  - Black Rot: 0.6188
+  - Bacterial spot rot: 0.0259
+  - No disease: 0.0040
+Image: cabbage aphid colony wrong.webp, Predicted Class: Downy Mildew, Confidence: 0.8383
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0001
+  - club root: 0.0000
+  - Downy Mildew: 0.8383
+  - Cabbage aphid colony: 0.1560
+  - Ring spot: 0.0013
+  - Black Rot: 0.0026
+  - Bacterial spot rot: 0.0000
+  - No disease: 0.0017
+Image: cabbage aphids colony 1 correct.jpg, Predicted Class: Cabbage aphid colony, Confidence: 0.9270
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0005
+  - Downy Mildew: 0.0046
+  - Cabbage aphid colony: 0.9270
+  - Ring spot: 0.0000
+  - Black Rot: 0.0053
+  - Bacterial spot rot: 0.0625
+  - No disease: 0.0000
+Image: club root 1 correct.jpg, Predicted Class: club root, Confidence: 1.0000
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 1.0000
+  - Downy Mildew: 0.0000
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 0.0000
+  - Black Rot: 0.0000
+  - Bacterial spot rot: 0.0000
+  - No disease: 0.0000
+Image: club root 2 correct.jpg, Predicted Class: club root, Confidence: 1.0000
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 1.0000
+  - Downy Mildew: 0.0000
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 0.0000
+  - Black Rot: 0.0000
+  - Bacterial spot rot: 0.0000
+  - No disease: 0.0000
+Image: downy mildew 1 wrong.jpg, Predicted Class: Bacterial spot rot, Confidence: 0.9544
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0000
+  - Downy Mildew: 0.0440
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 0.0005
+  - Black Rot: 0.0008
+  - Bacterial spot rot: 0.9544
+  - No disease: 0.0003
+Image: downy mildew 2 wong.jpg, Predicted Class: Bacterial spot rot, Confidence: 0.8712
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0020
+  - Downy Mildew: 0.0011
+  - Cabbage aphid colony: 0.0315
+  - Ring spot: 0.0014
+  - Black Rot: 0.0001
+  - Bacterial spot rot: 0.8712
+  - No disease: 0.0927
+Image: downy mildew 3 correct.jpg, Predicted Class: Downy Mildew, Confidence: 0.9991
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0007
+  - club root: 0.0000
+  - Downy Mildew: 0.9991
+  - Cabbage aphid colony: 0.0001
+  - Ring spot: 0.0000
+  - Black Rot: 0.0000
+  - Bacterial spot rot: 0.0000
+  - No disease: 0.0000
+Image: healthy 1 correct.png, Predicted Class: No disease, Confidence: 0.9859
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0003
+  - Downy Mildew: 0.0003
+  - Cabbage aphid colony: 0.0011
+  - Ring spot: 0.0000
+  - Black Rot: 0.0121
+  - Bacterial spot rot: 0.0003
+  - No disease: 0.9859
+Image: healthy 2 correct.webp, Predicted Class: No disease, Confidence: 0.9896
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0002
+  - Downy Mildew: 0.0006
+  - Cabbage aphid colony: 0.0007
+  - Ring spot: 0.0000
+  - Black Rot: 0.0019
+  - Bacterial spot rot: 0.0070
+  - No disease: 0.9896
+Image: ring spot 1 correct.jpg, Predicted Class: Ring spot, Confidence: 1.0000
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0000
+  - Downy Mildew: 0.0000
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 1.0000
+  - Black Rot: 0.0000
+  - Bacterial spot rot: 0.0000
+  - No disease: 0.0000
+Image: ring spot 2.jpg, Predicted Class: Ring spot, Confidence: 1.0000
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.0000
+  - club root: 0.0000
+  - Downy Mildew: 0.0000
+  - Cabbage aphid colony: 0.0000
+  - Ring spot: 1.0000
+  - Black Rot: 0.0000
+  - Bacterial spot rot: 0.0000
+  - No disease: 0.0000
+Image: WrongImage1.png, Predicted Class: Black Rot, Confidence: 0.5388
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.2780
+  - club root: 0.0544
+  - Downy Mildew: 0.0047
+  - Cabbage aphid colony: 0.0057
+  - Ring spot: 0.0844
+  - Black Rot: 0.5388
+  - Bacterial spot rot: 0.0302
+  - No disease: 0.0037
+Image: WrongImage2.png, Predicted Class: Alternaria_Leaf_Spot, Confidence: 0.5192
+Disease Probabilities:
+  - Alternaria_Leaf_Spot: 0.5192
+  - club root: 0.0585
+  - Downy Mildew: 0.0030
+  - Cabbage aphid colony: 0.0111
+  - Ring spot: 0.0694
+  - Black Rot: 0.2862
+  - Bacterial spot rot: 0.0261
+  - No disease: 0.0265
