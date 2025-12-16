@@ -51,25 +51,34 @@ def predict_one_image(image_file):
     return pred_class, confidence, probs
 
 def test_all_images_in_directory():
-    """Tests all images in the Image_Testing directory and prints their predictions."""
+    """Tests all images in the Image_Testing directory and writes their predictions to a file."""
     image_testing_dir = os.path.join(BASE_DIR, "Test_Images")
-    
+    results_file_path = os.path.join(BASE_DIR, "AI_TEST_RESULTS.TXT")
+
     if not os.path.exists(image_testing_dir):
         print(f"Error: Image testing directory not found at {image_testing_dir}")
         return
 
     print(f"Testing images in: {image_testing_dir}")
-    for filename in os.listdir(image_testing_dir):
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
-            image_path = os.path.join(image_testing_dir, filename)
-            try:
-                pred_class, confidence, probs = predict_one_image(image_path)
-                print(f"Image: {filename}, Predicted Class: {pred_class}, Confidence: {confidence:.4f}")
-                print("Disease Probabilities:")
-                for i, class_name in enumerate(CLASSES):
-                    print(f"  - {class_name}: {probs[0][i].item():.4f}")
-            except Exception as e:
-                print(f"Error processing {filename}: {e}")
+    with open(results_file_path, "w") as results_file:
+        results_file.write("AI Model Test Results\n")
+        results_file.write("=======================\n\n")
+
+        for filename in os.listdir(image_testing_dir):
+            if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+                image_path = os.path.join(image_testing_dir, filename)
+                try:
+                    pred_class, confidence, probs = predict_one_image(image_path)
+                    results_file.write(f"Image: {filename}\n")
+                    results_file.write(f"  Predicted Class: {pred_class}\n")
+                    results_file.write(f"  Confidence: {confidence:.4f}\n")
+                    results_file.write("  Disease Probabilities:\n")
+                    for i, class_name in enumerate(CLASSES):
+                        results_file.write(f"    - {class_name}: {probs[0][i].item():.4f}\n")
+                    results_file.write("\n")
+                except Exception as e:
+                    results_file.write(f"Error processing {filename}: {e}\n\n")
+    print(f"Test results written to {results_file_path}")
 
 if __name__ == "__main__":
     test_all_images_in_directory()
